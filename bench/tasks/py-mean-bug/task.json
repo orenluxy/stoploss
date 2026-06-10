@@ -1,0 +1,5 @@
+{
+  "name": "py-mean-bug",
+  "description": "stats.mean divides by len-1 instead of len; rolling_max off by one",
+  "test_cmd": "python3 -m pytest -q"
+}

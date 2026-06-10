@@ -1,0 +1,787 @@
+#!/usr/bin/env python3
+"""
+stoploss - a stop-loss for your coding agent.
+
+Bounded, convergence-enforced fix loops for Claude Code.
+State and policy live HERE (deterministic code), never in the model's context.
+
+Per-project state:
+  .stoploss/ledger.json   findings + loop state
+  .stoploss/config.json   gates, limits, prompt patterns
+
+Core commands:
+  init                  create state, auto-detect gates (python/node)
+  add ...               register a finding (flags or --json -)
+  start ID [ID..]       mark findings as in-progress (pending verification)
+  close ID              close a finding - RUNS its verify command; refuses on failure
+  fail ID               record a failed fix attempt (two strikes -> backlog + HALT)
+  round                 advance one round; HALTs when the loop stops converging
+  resume --rounds N     HUMAN-ONLY: clear a halt and grant N more rounds
+  status | open | list | pack | gate [--quick] | verify ID | report
+
+Hook handlers (wired by the plugin, read JSON on stdin):
+  hook prompt           inject ledger state when the user asks for a re-review
+  hook posttool         run quick gates after Edit/Write; exit 2 feeds failures back
+  hook stop             circuit breaker: block session end while findings are pending
+
+Exit codes: 0 ok | 2 policy halt / gate failure / blocked.
+"""
+import argparse
+import hashlib
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+STATE_DIR = ".stoploss"
+SEVERITIES = ["critical", "major", "minor", "style"]
+DEFAULT_PATTERNS = [
+    r"\bcheck( it)? again\b", r"\bre-?check\b", r"\breview\b", r"\baudit\b",
+    r"\bfind (more )?bugs\b", r"בדוק", r"תבדוק", r"עבור על",
+    r"אודיט", r"ביקורת", r"סקיר", r"סקור",
+]
+QUICK_TIMEOUT, FULL_TIMEOUT = 120, 600
+
+
+def now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def find_root(start=None):
+    p = Path(start or os.getcwd()).resolve()
+    for d in [p, *p.parents]:
+        if (d / STATE_DIR).is_dir():
+            return d
+    return None
+
+
+class Store:
+    def __init__(self, root):
+        self.root = root
+        self.dir = root / STATE_DIR
+        self.ledger_path = self.dir / "ledger.json"
+        self.config_path = self.dir / "config.json"
+
+    def _read(self, path, default):
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            return default
+
+    def _write(self, path, data):
+        tmp = path.with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        os.replace(tmp, path)  # atomic
+
+    @property
+    def ledger(self):
+        return self._read(self.ledger_path, None)
+
+    @property
+    def config(self):
+        return self._read(self.config_path, {})
+
+    def save_ledger(self, db):
+        self._write(self.ledger_path, db)
+
+    def save_config(self, cfg):
+        self._write(self.config_path, cfg)
+
+
+def store_or_die():
+    root = find_root()
+    if not root:
+        sys.exit("stoploss: no .stoploss/ found here or above. Run: stoploss init")
+    s = Store(root)
+    if s.ledger is None:
+        sys.exit("stoploss: state dir exists but ledger.json missing. Run: stoploss init")
+    return s
+
+
+def open_findings(db):
+    return [f for f in db["findings"] if f["status"] == "open"]
+
+
+def get(db, fid):
+    for f in db["findings"]:
+        if f["id"] == fid:
+            return f
+    sys.exit(f"stoploss: unknown finding id {fid}")
+
+
+def run_shell(cmd, cwd, timeout, tail=8):
+    try:
+        r = subprocess.run(cmd, shell=True, cwd=cwd, timeout=timeout,
+                           capture_output=True, text=True)
+        lines = (r.stdout + r.stderr).strip().splitlines()[-tail:]
+        return r.returncode, "\n".join(lines)
+    except subprocess.TimeoutExpired:
+        return 124, f"timeout after {timeout}s"
+
+
+def run_capture(cmd, cwd, timeout, env=None):
+    """Full stdout/stderr (no truncation) for auditor ingest and evidence.
+    Returns (rc, stdout, stderr)."""
+    try:
+        full_env = {**os.environ, **(env or {})}
+        r = subprocess.run(cmd, shell=True, cwd=cwd, timeout=timeout,
+                           capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", env=full_env)
+        return r.returncode, r.stdout, r.stderr
+    except subprocess.TimeoutExpired:
+        return 124, "", f"timeout after {timeout}s"
+
+
+def normalize_location(loc, root):
+    """Repo-relative POSIX path, line numbers stripped — stable fingerprints
+    across platforms and refactors."""
+    if not loc:
+        return ""
+    # strip trailing :line[:col]
+    m = re.match(r"^(.*?)(?::\d+){0,2}$", loc)
+    path_str = m.group(1) if m else loc
+    try:
+        p = Path(path_str)
+        if p.is_absolute():
+            path_str = str(p.relative_to(root))
+    except (ValueError, OSError):
+        pass
+    return path_str.replace("\\", "/")
+
+
+def finding_fp(auditor, key, location, title, root):
+    """Deterministic fingerprint for an audit finding.
+    Explicit `key` wins; else sha1(normalized_location|title)[:12].
+    NO volatile fields — no timestamps, no absolute paths."""
+    if key:
+        return f"{auditor}:{key}"
+    basis = f"{normalize_location(location, root)}|{title}"
+    return f"{auditor}:{hashlib.sha1(basis.encode('utf-8')).hexdigest()[:12]}"
+
+
+def record_failure(s, db, f, context, halt_loop=True):
+    """Unified two-strikes accounting for any failed verification."""
+    f["attempts"] = f.get("attempts", 0) + 1
+    if f["attempts"] >= 2:
+        f["status"] = "backlog"
+        f["benched"] = True
+        db["pending"] = [x for x in db.get("pending", []) if x != f["id"]]
+        if halt_loop:
+            db["halted"] = (f"{f['id']} failed verification twice ({context}). "
+                            f"The fix approach is wrong - do not loop on it. "
+                            f"A human must run: stoploss resume --rounds N")
+            s.save_ledger(db)
+            print(f"HALT: {db['halted']}")
+        else:
+            s.save_ledger(db)
+            print(f"{f['id']} benched after 2 failed fixes (independent finding). "
+                  f"Loop continues with other open findings. "
+                  f"It still BLOCKS push. Context: {context}")
+        sys.exit(2)
+    s.save_ledger(db)
+    print(f"{f['id']}: verification FAILED (attempt {f['attempts']}/2). "
+          f"One more failure benches it and halts the loop. Context: {context}")
+    sys.exit(2)
+
+
+# ------------------------------------------------------------------ commands
+def detect_gates(root):
+    quick, full = [], []
+    if (root / "pyproject.toml").exists() or (root / "requirements.txt").exists() \
+            or (root / "setup.py").exists():
+        if shutil.which("ruff"):
+            quick.append("ruff check .")
+        if shutil.which("pytest"):
+            full.append("python -m pytest -x -q")
+    pkg = root / "package.json"
+    if pkg.exists():
+        try:
+            scripts = json.loads(pkg.read_text()).get("scripts", {})
+        except Exception:
+            scripts = {}
+        if "lint" in scripts:
+            quick.append("npm run lint --silent")
+        if (root / "tsconfig.json").exists():
+            quick.append("npx tsc --noEmit")
+        if "test" in scripts:
+            full.append("npm test --silent")
+    return quick, full
+
+
+def changed_files(root, base):
+    """Files changed vs base ref (committed-unpushed + uncommitted + untracked).
+    Returns a set of repo-relative paths. Falls back to empty set on git errors."""
+    files = set()
+    rc, out = run_shell(f"git diff --name-only {base}", root, 30, tail=100000)
+    if rc == 0:
+        files |= {l.strip() for l in out.splitlines() if l.strip()}
+    rc2, out2 = run_shell("git ls-files --others --exclude-standard", root, 30, tail=100000)
+    if rc2 == 0:
+        files |= {l.strip() for l in out2.splitlines() if l.strip()}
+    return files
+
+
+def parse_auditor_output(stdout):
+    """Parse JSONL auditor output.
+    Returns (findings_list, complete_bool).
+    Tolerates non-JSON noise lines, CRLF, BOM.
+    A finding must have all 5 required keys: title, claim, location, severity, verify."""
+    findings, complete = [], False
+    req = ("title", "claim", "location", "severity", "verify")
+    for line in stdout.splitlines():
+        line = line.strip().lstrip("﻿")  # strip BOM
+        if not line.startswith("{"):
+            continue
+        try:
+            obj = json.loads(line)
+        except Exception:
+            continue
+        if obj.get("audit_complete") is True:
+            complete = True
+        elif all(k in obj for k in req):
+            findings.append(obj)
+    return findings, complete
+
+
+def cmd_init(_):
+    root = Path(os.getcwd()).resolve()
+    s = Store(root)
+    if s.ledger is not None:
+        sys.exit("stoploss: already initialized.")
+    s.dir.mkdir(exist_ok=True)
+    # Only write config if it doesn't already exist — preserve custom auditors/settings.
+    if not s.config_path.exists():
+        quick, full = detect_gates(root)
+        s.save_config({
+            "gates_quick": quick, "gates_full": full,
+            "max_rounds": 5, "severity_floor_round": 3, "max_chain": 2,
+            "prompt_patterns": DEFAULT_PATTERNS,
+        })
+    cfg = s.config
+    quick = cfg.get("gates_quick", [])
+    full = cfg.get("gates_full", [])
+    s.save_ledger({"v": 1, "created": now(), "round": 0, "last_open_count": None,
+                   "halted": None, "pending": [], "rounds_log": [], "findings": []})
+    print(f"stoploss initialized at {root}")
+    print(f"  quick gates: {quick or '(none detected - edit .stoploss/config.json)'}")
+    print(f"  full gates : {full or '(none detected - edit .stoploss/config.json)'}")
+
+
+def add_finding(db, cfg, data, source="manual", fp=None):
+    """Single policy gate for ALL finding creation (cmd_add + audit ingest).
+    Returns (fid, status, note). Raises ValueError on bad severity."""
+    if data["severity"] not in SEVERITIES:
+        raise ValueError(f"severity must be one of {SEVERITIES}")
+    fid = f"F-{1 + max([int(f['id'][2:]) for f in db['findings']] or [0])}"
+    status, note, chain = "open", "", 0
+    caused_by = data.get("caused_by")
+    is_audit = source.startswith("audit:")
+    if caused_by:
+        parent = get(db, caused_by)
+        chain = parent.get("chain", 0) + 1
+        if chain > cfg.get("max_chain", 2):
+            status, note = "backlog", f"regression chain depth {chain} > max"
+    elif db["round"] > 0 and not is_audit:
+        status, note = "backlog", "no caused_by after audit round (review noise)"
+    if not is_audit and db["round"] >= cfg.get("severity_floor_round", 3) \
+            and data["severity"] in ("minor", "style") and status == "open":
+        status, note = "backlog", f"below severity floor at round {db['round']}"
+    if data.get("triage"):
+        status = "triage"
+    db["findings"].append({
+        "id": fid, "title": data["title"], "claim": data["claim"],
+        "location": data["location"], "severity": data["severity"],
+        "verify": data["verify"], "status": status, "attempts": 0,
+        "created_round": db["round"], "caused_by": caused_by, "chain": chain,
+        "fp": fp, "source": source, "reopens": 0,
+        "evidence": data.get("evidence"), "created": now(),
+    })
+    return fid, status, note
+
+
+def cmd_add(a):
+    s = store_or_die()
+    db, cfg = s.ledger, s.config
+    if a.json:
+        raw = sys.stdin.read() if a.json == "-" else Path(a.json).read_text(encoding="utf-8")
+        data = json.loads(raw)
+    else:
+        need = [k for k in ("title", "claim", "location", "severity", "verify")
+                if not getattr(a, k)]
+        if need:
+            sys.exit(f"stoploss add: missing {need} (or use --json -)")
+        data = {k: getattr(a, k) for k in
+                ("title", "claim", "location", "severity", "verify")}
+        data["caused_by"] = a.caused_by
+    try:
+        fid, status, note = add_finding(db, cfg, data, source="manual")
+    except ValueError as e:
+        sys.exit(str(e))
+    s.save_ledger(db)
+    print(f"{fid} -> {status}" + (f" ({note})" if note else ""))
+
+
+def cmd_start(a):
+    s = store_or_die()
+    db = s.ledger
+    for fid in a.ids:
+        f = get(db, fid)
+        if f["status"] != "open":
+            sys.exit(f"{fid} is {f['status']}, not open.")
+        if fid not in db["pending"]:
+            db["pending"].append(fid)
+    s.save_ledger(db)
+    print(f"pending verification: {db['pending']}")
+
+
+def cmd_close(a):
+    s = store_or_die()
+    db = s.ledger
+    f = get(db, a.id)
+    if f["status"] != "open":
+        sys.exit(f"{a.id} is {f['status']}.")
+    v = f["verify"].strip()
+    if v.upper().startswith("MANUAL:"):
+        # POLICY: manual findings close only on an explicit verifier verdict.
+        if a.agent_verdict != "PASS":
+            sys.exit(f"{a.id} has a MANUAL verify. Run the stoploss-verifier "
+                     f"subagent on the finding + diff, then close with "
+                     f"--agent-verdict PASS (or record failure with: stoploss fail {a.id}).")
+    else:
+        # THE CORE GUARANTEE: the model cannot declare success.
+        # The finding's own verify command decides.
+        rc, out = run_shell(v, s.root, FULL_TIMEOUT)
+        if rc != 0:
+            record_failure(s, db, f, f"verify cmd exit {rc}: {out}",
+                           halt_loop=bool(f.get("caused_by")))
+    f["status"] = "closed"
+    f["closed"] = now()
+    db["pending"] = [x for x in db["pending"] if x != a.id]
+    s.save_ledger(db)
+    print(f"{a.id} closed (verified). Open: {len(open_findings(db))}, "
+          f"pending: {db['pending']}")
+
+
+def cmd_triage(a):
+    s = store_or_die()
+    db = s.ledger
+    f = get(db, a.id)
+    if f["status"] != "triage":
+        sys.exit(f"{a.id} is {f['status']}, not triage.")
+    if a.verdict == "REAL":
+        f["status"] = "open"
+        msg = "open (enters fix loop)"
+    else:
+        f["status"] = "dismissed"
+        msg = "dismissed (future audits skip it via fingerprint)"
+    s.save_ledger(db)
+    print(f"{a.id} -> {msg}")
+
+
+def cmd_fail(a):
+    s = store_or_die()
+    db = s.ledger
+    f = get(db, a.id)
+    record_failure(s, db, f, a.reason or "agent verdict FAIL",
+                   halt_loop=bool(f.get("caused_by")))
+
+
+def cmd_verify(a):
+    s = store_or_die()
+    f = get(s.ledger, a.id)
+    v = f["verify"].strip()
+    if v.upper().startswith("MANUAL:"):
+        print(f"{a.id} is MANUAL: {v[7:].strip()}")
+        return
+    rc, out = run_shell(v, s.root, FULL_TIMEOUT)
+    print(f"{a.id} verify exit={rc}\n{out}")
+    sys.exit(0 if rc == 0 else 2)
+
+
+def cmd_round(_):
+    s = store_or_die()
+    db, cfg = s.ledger, s.config
+    if db["halted"]:
+        print(f"HALTED: {db['halted']}")
+        sys.exit(2)
+    cur_open = open_findings(db)
+    cur = len(cur_open)
+    if db["round"] >= cfg.get("max_rounds", 5):
+        db["halted"] = (f"max_rounds ({cfg.get('max_rounds', 5)}) reached with "
+                        f"{cur} open. Report and stop. Human: stoploss resume")
+        s.save_ledger(db)
+        print(f"HALT: {db['halted']}")
+        sys.exit(2)
+    # POLICY: monotonic convergence with a regression exemption.
+    # Open findings born as regressions (caused_by) in the round that just
+    # ended don't count against shrink - but organic stagnation halts.
+    exempt = sum(1 for f in cur_open
+                 if f.get("caused_by") and f["created_round"] == db["round"])
+    effective = cur - exempt
+    if db["last_open_count"] is not None and effective >= db["last_open_count"]:
+        db["halted"] = (f"loop is not converging (effective open "
+                        f"{effective} >= previous {db['last_open_count']}). "
+                        f"Stop and report. Human: stoploss resume")
+        s.save_ledger(db)
+        print(f"HALT: {db['halted']}")
+        sys.exit(2)
+    db["round"] += 1
+    db["last_open_count"] = cur
+    db["rounds_log"].append({"round": db["round"], "started": now(), "open": cur})
+    s.save_ledger(db)
+    floor = ("critical/major only"
+             if db["round"] >= cfg.get("severity_floor_round", 3)
+             else "all severities")
+    print(f"Round {db['round']} started. Open: {cur} (exempt regressions: "
+          f"{exempt}). Accepting new findings: {floor}.")
+
+
+def cmd_resume(a):
+    # POLICY: the loop can NEVER restart itself. Only a human runs this.
+    s = store_or_die()
+    db, cfg = s.ledger, s.config
+    db["halted"] = None
+    db["last_open_count"] = None
+    cfg["max_rounds"] = db["round"] + a.rounds
+    s.save_ledger(db)
+    s.save_config(cfg)
+    print(f"Resumed by human. Budget: {a.rounds} more rounds "
+          f"(max_rounds={cfg['max_rounds']}).")
+
+
+def cmd_gate(a):
+    s = store_or_die()
+    cfg = s.config
+    gates = cfg.get("gates_quick", []) if a.quick else \
+        cfg.get("gates_quick", []) + cfg.get("gates_full", [])
+    if not gates:
+        print("No gates configured.")
+        return
+    for g in gates:
+        rc, out = run_shell(g, s.root,
+                            QUICK_TIMEOUT if a.quick else FULL_TIMEOUT)
+        print(f"[gate] {g} -> exit {rc}")
+        if rc != 0:
+            print(out)
+            print(f"GATE FAILED: {g}")
+            sys.exit(2)
+    print("All gates passed.")
+
+
+def check_gate(db, new_this_run):
+    """Exit 0 IFF push-ready: no open, no triage, no benched audit findings,
+    and this audit run ingested nothing new. Otherwise exit 2 with reasons."""
+    blocks = []
+    oc = len(open_findings(db))
+    tc = len([f for f in db["findings"] if f["status"] == "triage"])
+    benched = [f for f in db["findings"]
+               if f["status"] == "backlog" and f.get("benched")
+               and str(f.get("source", "")).startswith("audit:")]
+    if oc:
+        blocks.append(f"{oc} open finding(s)")
+    if tc:
+        blocks.append(f"{tc} triage candidate(s) awaiting verdict")
+    if benched:
+        blocks.append(f"{len(benched)} benched audit finding(s) (fix approach failed twice)")
+    if new_this_run:
+        blocks.append(f"{new_this_run} new finding(s) this run (fix them first)")
+    if blocks:
+        print(f"NOT READY TO PUSH: {', '.join(blocks)}.")
+        sys.exit(2)
+    print("READY TO PUSH: audit clean — 0 open / 0 triage / 0 benched, no new findings.")
+    sys.exit(0)
+
+
+def cmd_audit(a):
+    s = store_or_die()
+    db, cfg = s.ledger, s.config
+    auditors = cfg.get("auditors", [])
+    if not auditors:
+        sys.exit("stoploss audit: no auditors in .stoploss/config.json — "
+                 "add an \"auditors\" list with {name, cmd, type} entries")
+    base = cfg.get("diff_base", "origin/develop")
+    changed = changed_files(s.root, base)
+    env = {
+        "STOPLOSS_CHANGED_FILES": "\n".join(sorted(changed)),
+        "STOPLOSS_DIFF_BASE": base,
+    }
+    cap = cfg.get("max_audit_findings", 50)
+    new_ct = reopen_ct = 0
+    for ad in auditors:
+        rc, out, err = run_capture(ad["cmd"], s.root, FULL_TIMEOUT, env=env)
+        findings, complete = parse_auditor_output(out)
+        if not complete:
+            tail = "\n".join((err or out).strip().splitlines()[-8:])
+            print(f"AUDIT FAILED: auditor '{ad['name']}' emitted no completion "
+                  f"sentinel (exit {rc}) — treated as broken, NOT clean.\n{tail}")
+            sys.exit(2)
+        if len(findings) > cap:
+            print(f"AUDIT FAILED: auditor '{ad['name']}' emitted {len(findings)} "
+                  f"findings (> max_audit_findings {cap}). Probable broken/flaky "
+                  f"auditor — check diff_base scope in .stoploss/config.json")
+            sys.exit(2)
+        for fd in findings:
+            fp = finding_fp(ad["name"], fd.get("key"), fd.get("location"),
+                            fd["title"], s.root)
+            ex = next((f for f in db["findings"] if f.get("fp") == fp), None)
+            if ex:
+                if ex["status"] == "closed":
+                    ex.update(status="open", attempts=0,
+                              reopens=ex.get("reopens", 0) + 1,
+                              evidence=fd.get("evidence"))
+                    reopen_ct += 1
+                elif ex["status"] != "dismissed":
+                    ex["evidence"] = fd.get("evidence")
+                continue  # skip insert
+            data = dict(fd)
+            data["triage"] = (ad.get("type") == "triage")
+            try:
+                add_finding(db, cfg, data, source=f"audit:{ad['name']}", fp=fp)
+            except ValueError as e:
+                sys.exit(f"auditor '{ad['name']}' emitted bad finding: {e}")
+            new_ct += 1
+    s.save_ledger(db)
+    if a.check:
+        check_gate(db, new_ct)
+        return
+    oc = len(open_findings(db))
+    tc = len([f for f in db["findings"] if f["status"] == "triage"])
+    print(f"audit: {new_ct} new, {reopen_ct} reopened. open={oc}, triage={tc}.")
+
+
+def cmd_status(_):
+    s = store_or_die()
+    db = s.ledger
+    o = open_findings(db)
+    counts = {st: len([f for f in db["findings"] if f["status"] == st])
+              for st in ("open", "closed", "backlog", "triage", "dismissed")}
+    halted = f" | HALTED: {db['halted']}" if db["halted"] else ""
+    print(f"Round {db['round']} | open {counts['open']} | closed {counts['closed']} "
+          f"| triage {counts['triage']} | backlog {counts['backlog']} "
+          f"| dismissed {counts['dismissed']} | pending {db['pending']}{halted}")
+    for f in o:
+        print(f"  {f['id']} [{f['severity']}] {f['title']} @ {f['location']}")
+    for f in [x for x in db["findings"] if x["status"] == "triage"]:
+        print(f"  {f['id']} [TRIAGE {f['severity']}] {f['title']} @ {f['location']}")
+
+
+def cmd_open(_):
+    for f in open_findings(store_or_die().ledger):
+        print(json.dumps(f, ensure_ascii=False))
+
+
+def cmd_list(_):
+    for f in store_or_die().ledger["findings"]:
+        print(f"{f['id']:6} {f['status']:8} [{f['severity']:8}] {f['title']}")
+
+
+def cmd_pack(_):
+    s = store_or_die()
+    db = s.ledger
+    print(json.dumps({
+        "stoploss_round": db["round"],
+        "halted": db["halted"],
+        "pending": db["pending"],
+        "open_findings": open_findings(db),
+        "triage_findings": [f for f in db["findings"] if f["status"] == "triage"],
+        "rules": [
+            "Work ONLY on findings by id. Never free-audit.",
+            "Before fixing: stoploss start <ids>. After fixing: stoploss close <id> "
+            "(it runs the verify command itself and will refuse if it fails).",
+            "MANUAL findings: run the stoploss-verifier subagent on finding+diff, "
+            "then close --agent-verdict PASS, or: stoploss fail <id>.",
+            "New issues found while fixing: stoploss add ... --caused-by <id>. "
+            "Anything else goes to backlog automatically - accept that.",
+            "If any command exits 2 with HALT: summarize and STOP. Only the "
+            "human can resume.",
+            "TRIAGE findings: run the stoploss-verifier subagent on the candidate, "
+            "then: stoploss triage <id> --verdict REAL (enters fix loop) "
+            "or NOISE (dismissed forever — re-audits skip it).",
+            "A close that exits 2 means THIS finding's verify failed. "
+            "Check stoploss status: if HALTED (regression), stop and report. "
+            "If NOT halted (independent finding), it was benched — continue with other open findings.",
+        ],
+    }, indent=2, ensure_ascii=False))
+
+
+# ------------------------------------------------------------------ hooks
+def hook_prompt():
+    data = json.load(sys.stdin)
+    root = find_root(data.get("cwd"))
+    if not root:
+        return
+    s = Store(root)
+    db = s.ledger
+    if db is None:
+        return
+    if db["halted"]:
+        print(f"[stoploss] LOOP HALTED: {db['halted']}")
+        return
+    prompt = data.get("prompt", "")
+    pats = s.config.get("prompt_patterns", DEFAULT_PATTERNS)
+    if any(re.search(p, prompt, re.IGNORECASE) for p in pats):
+        o = open_findings(db)
+        ids = ", ".join(f["id"] for f in o) or "none"
+        print(f"[stoploss] This repo uses a findings ledger. Round {db['round']}, "
+              f"open: {ids}, pending: {db['pending']}. Do NOT free-audit - "
+              f"work open findings by id, or run /stoploss for the audit flow.")
+
+
+def hook_posttool():
+    data = json.load(sys.stdin)
+    if data.get("tool_name") not in ("Edit", "Write", "MultiEdit"):
+        return
+    root = find_root(data.get("cwd"))
+    if not root:
+        return
+    s = Store(root)
+    if s.ledger is None:
+        return
+    for g in s.config.get("gates_quick", []):
+        rc, out = run_shell(g, root, QUICK_TIMEOUT)
+        if rc != 0:
+            print(f"[stoploss] QUICK GATE FAILED after edit: {g}\n{out}",
+                  file=sys.stderr)
+            sys.exit(2)
+
+
+def hook_stop():
+    data = json.load(sys.stdin)
+    if data.get("stop_hook_active"):
+        return  # never double-block; avoids infinite stop loops
+    root = find_root(data.get("cwd"))
+    if not root:
+        return
+    s = Store(root)
+    db = s.ledger
+    if db is None or db["halted"]:
+        return  # a halted loop SHOULD stop
+    blockers = []
+    if db.get("pending"):
+        blockers.append(f"findings pending verification {db['pending']}")
+    if db["round"] > 0:
+        oc = len(open_findings(db))
+        if oc:
+            blockers.append(f"{oc} open finding(s) not closed")
+    tc = len([f for f in db["findings"] if f["status"] == "triage"])
+    if tc:
+        blockers.append(f"{tc} triage candidate(s) awaiting verdict")
+    if blockers:
+        print(f"[stoploss] Session cannot end: {'; '.join(blockers)}. "
+              f"Close/triage findings, or the human resumes with: stoploss resume",
+              file=sys.stderr)
+        sys.exit(2)
+
+
+# ------------------------------------------------------------------ report
+def cmd_report(_):
+    """Best-effort token accounting from Claude Code session transcripts.
+    Transcript format is internal to Claude Code and may change; this degrades
+    gracefully and is for measurement, not enforcement."""
+    s = store_or_die()
+    db = s.ledger
+    slug = str(s.root).replace("/", "-")
+    candidates = [Path.home() / ".claude" / "projects" / slug,
+                  Path.home() / ".claude" / "projects" / slug.lstrip("-")]
+    files = []
+    for c in candidates:
+        if c.is_dir():
+            files = sorted(c.glob("*.jsonl"))
+            break
+    if not files:
+        print("No Claude Code transcripts found for this project "
+              "(format/location may have changed). Skipping token report.")
+        return
+    marks = [(r["round"], r["started"]) for r in db.get("rounds_log", [])]
+    per_round = {}
+    total = {"in": 0, "out": 0, "cache_read": 0}
+    for fp in files:
+        for line in fp.read_text(encoding="utf-8", errors="ignore").splitlines():
+            try:
+                obj = json.loads(line)
+            except Exception:
+                continue
+            usage = (obj.get("message") or {}).get("usage") or obj.get("usage")
+            ts = obj.get("timestamp") or ""
+            if not usage:
+                continue
+            i = usage.get("input_tokens", 0) or 0
+            o = usage.get("output_tokens", 0) or 0
+            cr = usage.get("cache_read_input_tokens", 0) or 0
+            total["in"] += i
+            total["out"] += o
+            total["cache_read"] += cr
+            rnd = 0
+            for r, started in marks:
+                if ts and ts >= started:
+                    rnd = r
+            agg = per_round.setdefault(rnd, {"in": 0, "out": 0})
+            agg["in"] += i
+            agg["out"] += o
+    closed = len([f for f in db["findings"] if f["status"] == "closed"])
+    print(f"Tokens (all sessions of this project): in={total['in']:,} "
+          f"out={total['out']:,} cache_read={total['cache_read']:,}")
+    for rnd in sorted(per_round):
+        a = per_round[rnd]
+        print(f"  round {rnd}: in={a['in']:,} out={a['out']:,}")
+    if closed:
+        spend = total["in"] + total["out"]
+        print(f"Closed findings: {closed} -> {spend // closed:,} "
+              f"tokens per closed finding (in+out, cache reads excluded)")
+
+
+# ------------------------------------------------------------------ main
+def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
+    p = argparse.ArgumentParser(prog="stoploss")
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("init")
+    a = sub.add_parser("add")
+    for f in ("--title", "--claim", "--location", "--severity", "--verify"):
+        a.add_argument(f)
+    a.add_argument("--caused-by", dest="caused_by", default=None)
+    a.add_argument("--json", help="path to JSON, or - for stdin")
+    st = sub.add_parser("start")
+    st.add_argument("ids", nargs="+")
+    c = sub.add_parser("close")
+    c.add_argument("id")
+    c.add_argument("--agent-verdict", default=None)
+    fl = sub.add_parser("fail")
+    fl.add_argument("id")
+    fl.add_argument("--reason", default=None)
+    v = sub.add_parser("verify")
+    v.add_argument("id")
+    r = sub.add_parser("resume")
+    r.add_argument("--rounds", type=int, default=2)
+    g = sub.add_parser("gate")
+    g.add_argument("--quick", action="store_true")
+    au = sub.add_parser("audit")
+    au.add_argument("--check", action="store_true")
+    tr = sub.add_parser("triage")
+    tr.add_argument("id")
+    tr.add_argument("--verdict", choices=["REAL", "NOISE"], required=True)
+    for name in ("round", "status", "open", "list", "pack", "report"):
+        sub.add_parser(name)
+    h = sub.add_parser("hook")
+    h.add_argument("which", choices=["prompt", "posttool", "stop"])
+
+    args = p.parse_args()
+    if args.cmd == "hook":
+        {"prompt": hook_prompt, "posttool": hook_posttool,
+         "stop": hook_stop}[args.which]()
+        return
+    {"init": cmd_init, "add": cmd_add, "start": cmd_start, "close": cmd_close,
+     "triage": cmd_triage, "fail": cmd_fail, "verify": cmd_verify, "round": cmd_round,
+     "resume": cmd_resume, "gate": cmd_gate, "audit": cmd_audit,
+     "status": cmd_status, "open": cmd_open, "list": cmd_list,
+     "pack": cmd_pack, "report": cmd_report}[args.cmd](args)
+
+
+if __name__ == "__main__":
+    main()

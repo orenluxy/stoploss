@@ -1,0 +1,5 @@
+{
+  "name": "py-window-bug",
+  "description": "sliding window sum drops the last window",
+  "test_cmd": "python3 -m pytest -q"
+}

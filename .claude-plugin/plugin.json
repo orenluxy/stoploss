@@ -1,0 +1,8 @@
+{
+  "name": "stoploss",
+  "version": "1.0.0",
+  "description": "A stop-loss for your coding agent: convergence-enforced fix loops with a findings ledger. Fewer rounds, fewer tokens, deterministic stops. Ships with a reproducible benchmark harness instead of claims.",
+  "author": { "name": "Oren Luxy", "github": "orenluxy" },
+  "homepage": "https://github.com/orenluxy/stoploss",
+  "license": "MIT"
+}
