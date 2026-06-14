@@ -1,0 +1,3384 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "run_bench.py",
+      "file_type": "code",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L1",
+      "id": "bench_run_bench_py",
+      "community": 8,
+      "norm_label": "run_bench.py"
+    },
+    {
+      "label": "deep_get_usage()",
+      "file_type": "code",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L62",
+      "id": "bench_run_bench_deep_get_usage",
+      "community": 8,
+      "norm_label": "deep_get_usage()"
+    },
+    {
+      "label": "run_one()",
+      "file_type": "code",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L79",
+      "id": "bench_run_bench_run_one",
+      "community": 8,
+      "norm_label": "run_one()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L130",
+      "id": "bench_run_bench_main",
+      "community": 8,
+      "norm_label": "main()"
+    },
+    {
+      "label": "Recursively harvest token usage fields from arbitrary runner JSON.",
+      "file_type": "rationale",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L63",
+      "id": "bench_run_bench_rationale_63",
+      "community": 8,
+      "norm_label": "recursively harvest token usage fields from arbitrary runner json."
+    },
+    {
+      "label": "stats.py",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-mean-bug/stats.py",
+      "source_location": "L1",
+      "id": "bench_tasks_py_mean_bug_stats_py",
+      "community": 3,
+      "norm_label": "stats.py"
+    },
+    {
+      "label": "mean()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-mean-bug/stats.py",
+      "source_location": "L4",
+      "id": "py_mean_bug_stats_mean",
+      "community": 3,
+      "norm_label": "mean()"
+    },
+    {
+      "label": "variance()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-mean-bug/stats.py",
+      "source_location": "L10",
+      "id": "py_mean_bug_stats_variance",
+      "community": 3,
+      "norm_label": "variance()"
+    },
+    {
+      "label": "Tiny stats helpers (contains seeded bugs for the benchmark).",
+      "file_type": "rationale",
+      "source_file": "bench/tasks/py-mean-bug/stats.py",
+      "source_location": "L1",
+      "id": "py_mean_bug_stats_rationale_1",
+      "community": 3,
+      "norm_label": "tiny stats helpers (contains seeded bugs for the benchmark)."
+    },
+    {
+      "label": "test_stats.py",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L1",
+      "id": "bench_tasks_py_mean_bug_tests_test_stats_py",
+      "community": 3,
+      "norm_label": "test_stats.py"
+    },
+    {
+      "label": "test_mean_basic()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L4",
+      "id": "tests_test_stats_test_mean_basic",
+      "community": 3,
+      "norm_label": "test_mean_basic()"
+    },
+    {
+      "label": "test_mean_single()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L8",
+      "id": "tests_test_stats_test_mean_single",
+      "community": 3,
+      "norm_label": "test_mean_single()"
+    },
+    {
+      "label": "test_variance_constant()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L12",
+      "id": "tests_test_stats_test_variance_constant",
+      "community": 3,
+      "norm_label": "test_variance_constant()"
+    },
+    {
+      "label": "window.py",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-window-bug/window.py",
+      "source_location": "L1",
+      "id": "bench_tasks_py_window_bug_window_py",
+      "community": 6,
+      "norm_label": "window.py"
+    },
+    {
+      "label": "window_sums()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-window-bug/window.py",
+      "source_location": "L1",
+      "id": "py_window_bug_window_window_sums",
+      "community": 6,
+      "norm_label": "window_sums()"
+    },
+    {
+      "label": "Sums of every contiguous window of size k.",
+      "file_type": "rationale",
+      "source_file": "bench/tasks/py-window-bug/window.py",
+      "source_location": "L2",
+      "id": "py_window_bug_window_rationale_2",
+      "community": 6,
+      "norm_label": "sums of every contiguous window of size k."
+    },
+    {
+      "label": "test_window.py",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L1",
+      "id": "bench_tasks_py_window_bug_tests_test_window_py",
+      "community": 6,
+      "norm_label": "test_window.py"
+    },
+    {
+      "label": "test_counts()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L4",
+      "id": "tests_test_window_test_counts",
+      "community": 6,
+      "norm_label": "test_counts()"
+    },
+    {
+      "label": "test_values()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L8",
+      "id": "tests_test_window_test_values",
+      "community": 6,
+      "norm_label": "test_values()"
+    },
+    {
+      "label": "test_full_window()",
+      "file_type": "code",
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L12",
+      "id": "tests_test_window_test_full_window",
+      "community": 6,
+      "norm_label": "test_full_window()"
+    },
+    {
+      "label": "test_stoploss.py",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L1",
+      "id": "tests_test_stoploss_py",
+      "community": 1,
+      "norm_label": "test_stoploss.py"
+    },
+    {
+      "label": "run()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L12",
+      "id": "tests_test_stoploss_run",
+      "community": 0,
+      "norm_label": "run()"
+    },
+    {
+      "label": "sl()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L19",
+      "id": "tests_test_stoploss_sl",
+      "community": 1,
+      "norm_label": "sl()"
+    },
+    {
+      "label": "add()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L25",
+      "id": "tests_test_stoploss_add",
+      "community": 1,
+      "norm_label": "add()"
+    },
+    {
+      "label": "init()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L33",
+      "id": "tests_test_stoploss_init",
+      "community": 1,
+      "norm_label": "init()"
+    },
+    {
+      "label": "test_close_is_gated_by_verify_command()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L39",
+      "id": "tests_test_stoploss_test_close_is_gated_by_verify_command",
+      "community": 1,
+      "norm_label": "test_close_is_gated_by_verify_command()"
+    },
+    {
+      "label": "test_close_passes_when_verify_passes()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L51",
+      "id": "tests_test_stoploss_test_close_passes_when_verify_passes",
+      "community": 1,
+      "norm_label": "test_close_passes_when_verify_passes()"
+    },
+    {
+      "label": "test_manual_close_requires_agent_verdict()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L58",
+      "id": "tests_test_stoploss_test_manual_close_requires_agent_verdict",
+      "community": 1,
+      "norm_label": "test_manual_close_requires_agent_verdict()"
+    },
+    {
+      "label": "test_noise_rule_after_audit_round()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L67",
+      "id": "tests_test_stoploss_test_noise_rule_after_audit_round",
+      "community": 1,
+      "norm_label": "test_noise_rule_after_audit_round()"
+    },
+    {
+      "label": "test_regression_with_caused_by_stays_open_but_chain_caps()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L75",
+      "id": "tests_test_stoploss_test_regression_with_caused_by_stays_open_but_chain_caps",
+      "community": 1,
+      "norm_label": "test_regression_with_caused_by_stays_open_but_chain_caps()"
+    },
+    {
+      "label": "test_monotonic_halt_with_regression_exemption()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L87",
+      "id": "tests_test_stoploss_test_monotonic_halt_with_regression_exemption",
+      "community": 1,
+      "norm_label": "test_monotonic_halt_with_regression_exemption()"
+    },
+    {
+      "label": "test_severity_floor_in_late_rounds()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L102",
+      "id": "tests_test_stoploss_test_severity_floor_in_late_rounds",
+      "community": 1,
+      "norm_label": "test_severity_floor_in_late_rounds()"
+    },
+    {
+      "label": "test_max_rounds_halts_and_only_human_resume_clears()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L122",
+      "id": "tests_test_stoploss_test_max_rounds_halts_and_only_human_resume_clears",
+      "community": 1,
+      "norm_label": "test_max_rounds_halts_and_only_human_resume_clears()"
+    },
+    {
+      "label": "test_stop_hook_blocks_on_pending_and_respects_guard()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L142",
+      "id": "tests_test_stoploss_test_stop_hook_blocks_on_pending_and_respects_guard",
+      "community": 1,
+      "norm_label": "test_stop_hook_blocks_on_pending_and_respects_guard()"
+    },
+    {
+      "label": "test_prompt_hook_injects_ledger_on_recheck_phrases()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L157",
+      "id": "tests_test_stoploss_test_prompt_hook_injects_ledger_on_recheck_phrases",
+      "community": 1,
+      "norm_label": "test_prompt_hook_injects_ledger_on_recheck_phrases()"
+    },
+    {
+      "label": "test_add_via_json_stdin()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L168",
+      "id": "tests_test_stoploss_test_add_via_json_stdin",
+      "community": 1,
+      "norm_label": "test_add_via_json_stdin()"
+    },
+    {
+      "label": "test_add_finding_helper_applies_policy()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L176",
+      "id": "tests_test_stoploss_test_add_finding_helper_applies_policy",
+      "community": 0,
+      "norm_label": "test_add_finding_helper_applies_policy()"
+    },
+    {
+      "label": "test_fingerprint_is_path_and_line_stable()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L211",
+      "id": "tests_test_stoploss_test_fingerprint_is_path_and_line_stable",
+      "community": 1,
+      "norm_label": "test_fingerprint_is_path_and_line_stable()"
+    },
+    {
+      "label": "write_auditor()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L232",
+      "id": "tests_test_stoploss_write_auditor",
+      "community": 0,
+      "norm_label": "write_auditor()"
+    },
+    {
+      "label": "load_sl()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L249",
+      "id": "tests_test_stoploss_load_sl",
+      "community": 0,
+      "norm_label": "load_sl()"
+    },
+    {
+      "label": "run_audit()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L258",
+      "id": "tests_test_stoploss_run_audit",
+      "community": 0,
+      "norm_label": "run_audit()"
+    },
+    {
+      "label": "test_audit_ingests_findings_as_open()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L275",
+      "id": "tests_test_stoploss_test_audit_ingests_findings_as_open",
+      "community": 0,
+      "norm_label": "test_audit_ingests_findings_as_open()"
+    },
+    {
+      "label": "test_audit_dedup_on_second_run()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L293",
+      "id": "tests_test_stoploss_test_audit_dedup_on_second_run",
+      "community": 0,
+      "norm_label": "test_audit_dedup_on_second_run()"
+    },
+    {
+      "label": "test_audit_reopens_closed_on_regression()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L307",
+      "id": "tests_test_stoploss_test_audit_reopens_closed_on_regression",
+      "community": 0,
+      "norm_label": "test_audit_reopens_closed_on_regression()"
+    },
+    {
+      "label": "test_audit_missing_sentinel_aborts()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L331",
+      "id": "tests_test_stoploss_test_audit_missing_sentinel_aborts",
+      "community": 0,
+      "norm_label": "test_audit_missing_sentinel_aborts()"
+    },
+    {
+      "label": "test_audit_tolerates_nonjson_noise()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L341",
+      "id": "tests_test_stoploss_test_audit_tolerates_nonjson_noise",
+      "community": 0,
+      "norm_label": "test_audit_tolerates_nonjson_noise()"
+    },
+    {
+      "label": "test_audit_bypasses_noise_rule_at_round2()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L359",
+      "id": "tests_test_stoploss_test_audit_bypasses_noise_rule_at_round2",
+      "community": 0,
+      "norm_label": "test_audit_bypasses_noise_rule_at_round2()"
+    },
+    {
+      "label": "test_audit_finding_benches_no_halt_on_two_strikes()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L380",
+      "id": "tests_test_stoploss_test_audit_finding_benches_no_halt_on_two_strikes",
+      "community": 1,
+      "norm_label": "test_audit_finding_benches_no_halt_on_two_strikes()"
+    },
+    {
+      "label": "test_caused_by_finding_halts_on_two_strikes()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L411",
+      "id": "tests_test_stoploss_test_caused_by_finding_halts_on_two_strikes",
+      "community": 1,
+      "norm_label": "test_caused_by_finding_halts_on_two_strikes()"
+    },
+    {
+      "label": "test_stop_blocks_on_open_findings_after_round0()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L439",
+      "id": "tests_test_stoploss_test_stop_blocks_on_open_findings_after_round0",
+      "community": 1,
+      "norm_label": "test_stop_blocks_on_open_findings_after_round0()"
+    },
+    {
+      "label": "test_stop_allows_when_clean()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L452",
+      "id": "tests_test_stoploss_test_stop_allows_when_clean",
+      "community": 1,
+      "norm_label": "test_stop_allows_when_clean()"
+    },
+    {
+      "label": "_make_clean_audit()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L464",
+      "id": "tests_test_stoploss_make_clean_audit",
+      "community": 0,
+      "norm_label": "_make_clean_audit()"
+    },
+    {
+      "label": "test_check_exit0_when_clean()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L472",
+      "id": "tests_test_stoploss_test_check_exit0_when_clean",
+      "community": 0,
+      "norm_label": "test_check_exit0_when_clean()"
+    },
+    {
+      "label": "test_check_exit2_with_open()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L485",
+      "id": "tests_test_stoploss_test_check_exit2_with_open",
+      "community": 1,
+      "norm_label": "test_check_exit2_with_open()"
+    },
+    {
+      "label": "test_prompt_hook_fires_on_hebrew_audit_noun()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L503",
+      "id": "tests_test_stoploss_test_prompt_hook_fires_on_hebrew_audit_noun",
+      "community": 1,
+      "norm_label": "test_prompt_hook_fires_on_hebrew_audit_noun()"
+    },
+    {
+      "label": "test_triage_real_to_open()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L524",
+      "id": "tests_test_stoploss_test_triage_real_to_open",
+      "community": 0,
+      "norm_label": "test_triage_real_to_open()"
+    },
+    {
+      "label": "test_triage_noise_to_dismissed()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L545",
+      "id": "tests_test_stoploss_test_triage_noise_to_dismissed",
+      "community": 0,
+      "norm_label": "test_triage_noise_to_dismissed()"
+    },
+    {
+      "label": "test_status_shows_triage_and_dismissed()",
+      "file_type": "code",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L569",
+      "id": "tests_test_stoploss_test_status_shows_triage_and_dismissed",
+      "community": 0,
+      "norm_label": "test_status_shows_triage_and_dismissed()"
+    },
+    {
+      "label": "Policy tests for the stoploss engine. Run: python3 -m pytest tests/ -q",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L1",
+      "id": "tests_test_stoploss_rationale_1",
+      "community": 1,
+      "norm_label": "policy tests for the stoploss engine. run: python3 -m pytest tests/ -q"
+    },
+    {
+      "label": "Thin wrapper for tests that need a simple run(cmd) call.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L13",
+      "id": "tests_test_stoploss_rationale_13",
+      "community": 0,
+      "norm_label": "thin wrapper for tests that need a simple run(cmd) call."
+    },
+    {
+      "label": "Write a fake auditor script that emits JSONL findings + optional sentinel.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L233",
+      "id": "tests_test_stoploss_rationale_233",
+      "community": 0,
+      "norm_label": "write a fake auditor script that emits jsonl findings + optional sentinel."
+    },
+    {
+      "label": "Init stoploss in tmp_path and return the loaded module.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L250",
+      "id": "tests_test_stoploss_rationale_250",
+      "community": 0,
+      "norm_label": "init stoploss in tmp_path and return the loaded module."
+    },
+    {
+      "label": "Run `stoploss audit` with the given auditors list in config.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L259",
+      "id": "tests_test_stoploss_rationale_259",
+      "community": 0,
+      "norm_label": "run `stoploss audit` with the given auditors list in config."
+    },
+    {
+      "label": "Basic: one deterministic finding lands as open with source audit:<name>.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L276",
+      "id": "tests_test_stoploss_rationale_276",
+      "community": 0,
+      "norm_label": "basic: one deterministic finding lands as open with source audit:<name>."
+    },
+    {
+      "label": "Re-running audit on same code \u2192 0 new (dedup by fingerprint).",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L294",
+      "id": "tests_test_stoploss_rationale_294",
+      "community": 0,
+      "norm_label": "re-running audit on same code \u2192 0 new (dedup by fingerprint)."
+    },
+    {
+      "label": "Close a finding, then audit emits same fp \u2192 reopens (regression detected).",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L308",
+      "id": "tests_test_stoploss_rationale_308",
+      "community": 0,
+      "norm_label": "close a finding, then audit emits same fp \u2192 reopens (regression detected)."
+    },
+    {
+      "label": "Auditor that exits without sentinel \u2192 AUDIT FAILED, exit 2.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L332",
+      "id": "tests_test_stoploss_rationale_332",
+      "community": 0,
+      "norm_label": "auditor that exits without sentinel \u2192 audit failed, exit 2."
+    },
+    {
+      "label": "npm-style banner lines before JSONL are ignored; finding still ingested.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L342",
+      "id": "tests_test_stoploss_rationale_342",
+      "community": 0,
+      "norm_label": "npm-style banner lines before jsonl are ignored; finding still ingested."
+    },
+    {
+      "label": "Audit-sourced findings at round 2 land as open, not backlog.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L360",
+      "id": "tests_test_stoploss_rationale_360",
+      "community": 0,
+      "norm_label": "audit-sourced findings at round 2 land as open, not backlog."
+    },
+    {
+      "label": "Independent audit finding (no caused_by) fails twice \u2192 benched (backlog), NO db.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L381",
+      "id": "tests_test_stoploss_rationale_381",
+      "community": 1,
+      "norm_label": "independent audit finding (no caused_by) fails twice \u2192 benched (backlog), no db."
+    },
+    {
+      "label": "Regression (has caused_by) fails twice \u2192 HALT (original behavior).",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L412",
+      "id": "tests_test_stoploss_rationale_412",
+      "community": 1,
+      "norm_label": "regression (has caused_by) fails twice \u2192 halt (original behavior)."
+    },
+    {
+      "label": "Round 1, one open finding (no pending) \u2192 hook stop exits 2.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L440",
+      "id": "tests_test_stoploss_rationale_440",
+      "community": 1,
+      "norm_label": "round 1, one open finding (no pending) \u2192 hook stop exits 2."
+    },
+    {
+      "label": "Round 1, zero open/triage/pending \u2192 hook stop exits 0.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L453",
+      "id": "tests_test_stoploss_rationale_453",
+      "community": 1,
+      "norm_label": "round 1, zero open/triage/pending \u2192 hook stop exits 0."
+    },
+    {
+      "label": "Helper: init, run a clean audit (zero findings), return run_audit result.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L465",
+      "id": "tests_test_stoploss_rationale_465",
+      "community": 0,
+      "norm_label": "helper: init, run a clean audit (zero findings), return run_audit result."
+    },
+    {
+      "label": "Zero findings after audit \u2192 audit --check exits 0.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L473",
+      "id": "tests_test_stoploss_rationale_473",
+      "community": 0,
+      "norm_label": "zero findings after audit \u2192 audit --check exits 0."
+    },
+    {
+      "label": "One open finding \u2192 audit --check exits 2.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L486",
+      "id": "tests_test_stoploss_rationale_486",
+      "community": 1,
+      "norm_label": "one open finding \u2192 audit --check exits 2."
+    },
+    {
+      "label": "\u05ea\u05e2\u05e9\u05d4 \u05d0\u05d5\u05d3\u05d9\u05d8 \u05dc\u05e4\u05e0\u05d9 \u05e4\u05d5\u05e9' triggers ledger injection (the user's actual phrase).",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L504",
+      "id": "tests_test_stoploss_rationale_504",
+      "community": 1,
+      "norm_label": "\u05ea\u05e2\u05e9\u05d4 \u05d0\u05d5\u05d3\u05d9\u05d8 \u05dc\u05e4\u05e0\u05d9 \u05e4\u05d5\u05e9' triggers ledger injection (the user's actual phrase)."
+    },
+    {
+      "label": "stoploss triage F-x --verdict REAL \u2192 status open.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L525",
+      "id": "tests_test_stoploss_rationale_525",
+      "community": 0,
+      "norm_label": "stoploss triage f-x --verdict real \u2192 status open."
+    },
+    {
+      "label": "stoploss triage F-x --verdict NOISE \u2192 dismissed; re-audit skips it.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L546",
+      "id": "tests_test_stoploss_rationale_546",
+      "community": 0,
+      "norm_label": "stoploss triage f-x --verdict noise \u2192 dismissed; re-audit skips it."
+    },
+    {
+      "label": "stoploss status output includes triage and dismissed counts.",
+      "file_type": "rationale",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L570",
+      "id": "tests_test_stoploss_rationale_570",
+      "community": 0,
+      "norm_label": "stoploss status output includes triage and dismissed counts."
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "id": "readme_md",
+      "community": 2,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "STOPLOSS \u2014 Stop-Loss for Your Coding Agent",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "id": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "community": 2,
+      "norm_label": "stoploss \u2014 stop-loss for your coding agent"
+    },
+    {
+      "label": "The Problem",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L8",
+      "id": "stoploss_readme_the_problem",
+      "community": 2,
+      "norm_label": "the problem"
+    },
+    {
+      "label": "code:block1 (without stoploss:)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L14",
+      "id": "stoploss_readme_codeblock_1",
+      "community": 2,
+      "norm_label": "code:block1 (without stoploss:)"
+    },
+    {
+      "label": "How It Works",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L33",
+      "id": "stoploss_readme_how_it_works",
+      "community": 2,
+      "norm_label": "how it works"
+    },
+    {
+      "label": "Policy Rules (enforced, not suggested)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L46",
+      "id": "stoploss_readme_policy_rules_enforced_not_suggested",
+      "community": 2,
+      "norm_label": "policy rules (enforced, not suggested)"
+    },
+    {
+      "label": "Token Savings",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L63",
+      "id": "stoploss_readme_token_savings",
+      "community": 2,
+      "norm_label": "token savings"
+    },
+    {
+      "label": "Installation",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L73",
+      "id": "stoploss_readme_installation",
+      "community": 4,
+      "norm_label": "installation"
+    },
+    {
+      "label": "Prerequisites",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L75",
+      "id": "stoploss_readme_prerequisites",
+      "community": 4,
+      "norm_label": "prerequisites"
+    },
+    {
+      "label": "Option A: Copy skill (recommended, no plugin system needed)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L79",
+      "id": "stoploss_readme_option_a_copy_skill_recommended_no_plugin_system_needed",
+      "community": 4,
+      "norm_label": "option a: copy skill (recommended, no plugin system needed)"
+    },
+    {
+      "label": "code:bash (# Copy skill to Claude Code's global skills directory)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L81",
+      "id": "stoploss_readme_codeblock_2",
+      "community": 4,
+      "norm_label": "code:bash (# copy skill to claude code's global skills directory)"
+    },
+    {
+      "label": "code:powershell (Copy-Item -Recurse skills\\stoploss\\ \"$env:USERPROFILE\\.claud)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L91",
+      "id": "stoploss_readme_codeblock_3",
+      "community": 4,
+      "norm_label": "code:powershell (copy-item -recurse skills\\stoploss\\ \"$env:userprofile\\.claud)"
+    },
+    {
+      "label": "code:json ({)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L98",
+      "id": "stoploss_readme_codeblock_4",
+      "community": 4,
+      "norm_label": "code:json ({)"
+    },
+    {
+      "label": "Option B: Plugin install (if supported by your Claude Code version)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L117",
+      "id": "stoploss_readme_option_b_plugin_install_if_supported_by_your_claude_code_version",
+      "community": 4,
+      "norm_label": "option b: plugin install (if supported by your claude code version)"
+    },
+    {
+      "label": "code:block5 (/plugin install stoploss)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L119",
+      "id": "stoploss_readme_codeblock_5",
+      "community": 4,
+      "norm_label": "code:block5 (/plugin install stoploss)"
+    },
+    {
+      "label": "Per-Project Setup",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L125",
+      "id": "stoploss_readme_per_project_setup",
+      "community": 2,
+      "norm_label": "per-project setup"
+    },
+    {
+      "label": "code:bash (stoploss init)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L129",
+      "id": "stoploss_readme_codeblock_6",
+      "community": 2,
+      "norm_label": "code:bash (stoploss init)"
+    },
+    {
+      "label": "Workflow",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L137",
+      "id": "stoploss_readme_workflow",
+      "community": 9,
+      "norm_label": "workflow"
+    },
+    {
+      "label": "The classic fix loop",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L139",
+      "id": "stoploss_readme_the_classic_fix_loop",
+      "community": 9,
+      "norm_label": "the classic fix loop"
+    },
+    {
+      "label": "code:bash (# 1. Audit pass \u2014 register findings with failing verify comm)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L141",
+      "id": "stoploss_readme_codeblock_7",
+      "community": 9,
+      "norm_label": "code:bash (# 1. audit pass \u2014 register findings with failing verify comm)"
+    },
+    {
+      "label": "The deterministic audit (pre-push)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L164",
+      "id": "stoploss_readme_the_deterministic_audit_pre_push",
+      "community": 9,
+      "norm_label": "the deterministic audit (pre-push)"
+    },
+    {
+      "label": "code:bash (# Run all configured auditors (diff-scoped to changed files))",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L166",
+      "id": "stoploss_readme_codeblock_8",
+      "community": 9,
+      "norm_label": "code:bash (# run all configured auditors (diff-scoped to changed files))"
+    },
+    {
+      "label": "Auditor Scripts (project-defined)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L185",
+      "id": "stoploss_readme_auditor_scripts_project_defined",
+      "community": 2,
+      "norm_label": "auditor scripts (project-defined)"
+    },
+    {
+      "label": "code:python (# example auditor (any language that prints to stdout))",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L189",
+      "id": "stoploss_readme_codeblock_9",
+      "community": 2,
+      "norm_label": "code:python (# example auditor (any language that prints to stdout))"
+    },
+    {
+      "label": "code:json ({)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L210",
+      "id": "stoploss_readme_codeblock_10",
+      "community": 2,
+      "norm_label": "code:json ({)"
+    },
+    {
+      "label": "Triage Findings",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L231",
+      "id": "stoploss_readme_triage_findings",
+      "community": 2,
+      "norm_label": "triage findings"
+    },
+    {
+      "label": "code:bash (stoploss triage F-5 --verdict REAL   # enters the fix loop a)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L235",
+      "id": "stoploss_readme_codeblock_11",
+      "community": 2,
+      "norm_label": "code:bash (stoploss triage f-5 --verdict real   # enters the fix loop a)"
+    },
+    {
+      "label": "Full Command Reference",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L244",
+      "id": "stoploss_readme_full_command_reference",
+      "community": 2,
+      "norm_label": "full command reference"
+    },
+    {
+      "label": "code:block12 (stoploss init                     create .stoploss/ state, a)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L246",
+      "id": "stoploss_readme_codeblock_12",
+      "community": 2,
+      "norm_label": "code:block12 (stoploss init                     create .stoploss/ state, a)"
+    },
+    {
+      "label": "Configuration Reference",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L269",
+      "id": "stoploss_readme_configuration_reference",
+      "community": 2,
+      "norm_label": "configuration reference"
+    },
+    {
+      "label": "code:json ({)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L273",
+      "id": "stoploss_readme_codeblock_13",
+      "community": 2,
+      "norm_label": "code:json ({)"
+    },
+    {
+      "label": "Hooks",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L294",
+      "id": "stoploss_readme_hooks",
+      "community": 2,
+      "norm_label": "hooks"
+    },
+    {
+      "label": "Tests",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L308",
+      "id": "stoploss_readme_tests",
+      "community": 2,
+      "norm_label": "tests"
+    },
+    {
+      "label": "code:bash (python -m pytest tests -q)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L310",
+      "id": "stoploss_readme_codeblock_14",
+      "community": 2,
+      "norm_label": "code:bash (python -m pytest tests -q)"
+    },
+    {
+      "label": "Benchmark",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L319",
+      "id": "stoploss_readme_benchmark",
+      "community": 2,
+      "norm_label": "benchmark"
+    },
+    {
+      "label": "code:bash (cd bench)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L321",
+      "id": "stoploss_readme_codeblock_15",
+      "community": 2,
+      "norm_label": "code:bash (cd bench)"
+    },
+    {
+      "label": "Design Principles",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L330",
+      "id": "stoploss_readme_design_principles",
+      "community": 2,
+      "norm_label": "design principles"
+    },
+    {
+      "label": "License",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L346",
+      "id": "stoploss_readme_license",
+      "community": 2,
+      "norm_label": "license"
+    },
+    {
+      "label": "stoploss-verifier.md",
+      "file_type": "document",
+      "source_file": "agents/stoploss-verifier.md",
+      "source_location": "L1",
+      "id": "agents_stoploss_verifier_md",
+      "community": 10,
+      "norm_label": "stoploss-verifier.md"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "bench/README.md",
+      "source_location": "L1",
+      "id": "bench_readme_md",
+      "community": 7,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "Benchmark harness",
+      "file_type": "document",
+      "source_file": "bench/README.md",
+      "source_location": "L1",
+      "id": "bench_readme_benchmark_harness",
+      "community": 7,
+      "norm_label": "benchmark harness"
+    },
+    {
+      "label": "Quick smoke (no agent, free)",
+      "file_type": "document",
+      "source_file": "bench/README.md",
+      "source_location": "L6",
+      "id": "bench_readme_quick_smoke_no_agent_free",
+      "community": 7,
+      "norm_label": "quick smoke (no agent, free)"
+    },
+    {
+      "label": "Real run",
+      "file_type": "document",
+      "source_file": "bench/README.md",
+      "source_location": "L9",
+      "id": "bench_readme_real_run",
+      "community": 7,
+      "norm_label": "real run"
+    },
+    {
+      "label": "Publishable run",
+      "file_type": "document",
+      "source_file": "bench/README.md",
+      "source_location": "L15",
+      "id": "bench_readme_publishable_run",
+      "community": 7,
+      "norm_label": "publishable run"
+    },
+    {
+      "label": "Honest limitations",
+      "file_type": "document",
+      "source_file": "bench/README.md",
+      "source_location": "L25",
+      "id": "bench_readme_honest_limitations",
+      "community": 7,
+      "norm_label": "honest limitations"
+    },
+    {
+      "label": "SKILL.md",
+      "file_type": "document",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L1",
+      "id": "skills_stoploss_skill_md",
+      "community": 5,
+      "norm_label": "skill.md"
+    },
+    {
+      "label": "stoploss \u2014 a stop-loss for your fix loop",
+      "file_type": "document",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L6",
+      "id": "stoploss_skill_stoploss_a_stop_loss_for_your_fix_loop",
+      "community": 5,
+      "norm_label": "stoploss \u2014 a stop-loss for your fix loop"
+    },
+    {
+      "label": "Why you cannot declare success",
+      "file_type": "document",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L14",
+      "id": "stoploss_skill_why_you_cannot_declare_success",
+      "community": 5,
+      "norm_label": "why you cannot declare success"
+    },
+    {
+      "label": "The audit pass (`/stoploss` on a fresh project)",
+      "file_type": "document",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L21",
+      "id": "stoploss_skill_the_audit_pass_stoploss_on_a_fresh_project",
+      "community": 5,
+      "norm_label": "the audit pass (`/stoploss` on a fresh project)"
+    },
+    {
+      "label": "The fix loop",
+      "file_type": "document",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L34",
+      "id": "stoploss_skill_the_fix_loop",
+      "community": 5,
+      "norm_label": "the fix loop"
+    },
+    {
+      "label": "When the user says \"check again\"",
+      "file_type": "document",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L53",
+      "id": "stoploss_skill_when_the_user_says_check_again",
+      "community": 5,
+      "norm_label": "when the user says \"check again\""
+    },
+    {
+      "label": "Context hygiene",
+      "file_type": "document",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L59",
+      "id": "stoploss_skill_context_hygiene",
+      "community": 5,
+      "norm_label": "context hygiene"
+    },
+    {
+      "label": "Audit Phase (Deterministic)",
+      "file_type": "document",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L65",
+      "id": "stoploss_skill_audit_phase_deterministic",
+      "community": 5,
+      "norm_label": "audit phase (deterministic)"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "bench_run_bench_py",
+      "target": "bench_run_bench_deep_get_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "bench_run_bench_py",
+      "target": "bench_run_bench_run_one",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "source": "bench_run_bench_py",
+      "target": "bench_run_bench_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "bench_run_bench_run_one",
+      "target": "bench_run_bench_deep_get_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "bench_run_bench_rationale_63",
+      "target": "bench_run_bench_deep_get_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/run_bench.py",
+      "source_location": "L151",
+      "weight": 1.0,
+      "source": "bench_run_bench_main",
+      "target": "bench_run_bench_run_one",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-mean-bug/stats.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "bench_tasks_py_mean_bug_stats_py",
+      "target": "py_mean_bug_stats_mean",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-mean-bug/stats.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "bench_tasks_py_mean_bug_stats_py",
+      "target": "py_mean_bug_stats_variance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-mean-bug/stats.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "py_mean_bug_stats_rationale_1",
+      "target": "bench_tasks_py_mean_bug_stats_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-mean-bug/stats.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "py_mean_bug_stats_variance",
+      "target": "py_mean_bug_stats_mean",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "tests_test_stats_test_mean_basic",
+      "target": "py_mean_bug_stats_mean"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_test_stats_test_mean_single",
+      "target": "py_mean_bug_stats_mean"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "tests_test_stats_test_variance_constant",
+      "target": "py_mean_bug_stats_variance"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "bench_tasks_py_mean_bug_tests_test_stats_py",
+      "target": "tests_test_stats_test_mean_basic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "bench_tasks_py_mean_bug_tests_test_stats_py",
+      "target": "tests_test_stats_test_mean_single",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-mean-bug/tests/test_stats.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "bench_tasks_py_mean_bug_tests_test_stats_py",
+      "target": "tests_test_stats_test_variance_constant",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-window-bug/window.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "bench_tasks_py_window_bug_window_py",
+      "target": "py_window_bug_window_window_sums",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-window-bug/window.py",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "py_window_bug_window_rationale_2",
+      "target": "py_window_bug_window_window_sums",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "tests_test_window_test_counts",
+      "target": "py_window_bug_window_window_sums"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_test_window_test_values",
+      "target": "py_window_bug_window_window_sums"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "tests_test_window_test_full_window",
+      "target": "py_window_bug_window_window_sums"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "bench_tasks_py_window_bug_tests_test_window_py",
+      "target": "tests_test_window_test_counts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "bench_tasks_py_window_bug_tests_test_window_py",
+      "target": "tests_test_window_test_values",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/tasks/py-window-bug/tests/test_window.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "bench_tasks_py_window_bug_tests_test_window_py",
+      "target": "tests_test_window_test_full_window",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_close_is_gated_by_verify_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_close_passes_when_verify_passes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_manual_close_requires_agent_verdict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_noise_rule_after_audit_round",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_regression_with_caused_by_stays_open_but_chain_caps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_monotonic_halt_with_regression_exemption",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_severity_floor_in_late_rounds",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_max_rounds_halts_and_only_human_resume_clears",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_stop_hook_blocks_on_pending_and_respects_guard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L157",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_prompt_hook_injects_ledger_on_recheck_phrases",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_add_via_json_stdin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_add_finding_helper_applies_policy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L211",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_fingerprint_is_path_and_line_stable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L232",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L249",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_load_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L258",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L275",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_audit_ingests_findings_as_open",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L293",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_audit_dedup_on_second_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L307",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_audit_reopens_closed_on_regression",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L331",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_audit_missing_sentinel_aborts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L341",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_audit_tolerates_nonjson_noise",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L359",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_audit_bypasses_noise_rule_at_round2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L380",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_audit_finding_benches_no_halt_on_two_strikes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L411",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_caused_by_finding_halts_on_two_strikes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L439",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_stop_blocks_on_open_findings_after_round0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L452",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_stop_allows_when_clean",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L464",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_make_clean_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L472",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_check_exit0_when_clean",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L485",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_check_exit2_with_open",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L503",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_prompt_hook_fires_on_hebrew_audit_noun",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L524",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_triage_real_to_open",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L545",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_triage_noise_to_dismissed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L569",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_py",
+      "target": "tests_test_stoploss_test_status_shows_triage_and_dismissed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_1",
+      "target": "tests_test_stoploss_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_sl",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L178",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_add_finding_helper_applies_policy",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L252",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_load_sl",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L266",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_run_audit",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L278",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_ingests_findings_as_open",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L296",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_dedup_on_second_run",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L310",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_reopens_closed_on_regression",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L334",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_missing_sentinel_aborts",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L344",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_tolerates_nonjson_noise",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L363",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_bypasses_noise_rule_at_round2",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L467",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_make_clean_audit",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L527",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_triage_real_to_open",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L548",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_triage_noise_to_dismissed",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L572",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_status_shows_triage_and_dismissed",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_13",
+      "target": "tests_test_stoploss_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_add",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_init",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_close_is_gated_by_verify_command",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_close_passes_when_verify_passes",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_manual_close_requires_agent_verdict",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_noise_rule_after_audit_round",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_regression_with_caused_by_stays_open_but_chain_caps",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_monotonic_halt_with_regression_exemption",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_severity_floor_in_late_rounds",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L129",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_max_rounds_halts_and_only_human_resume_clears",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L145",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_stop_hook_blocks_on_pending_and_respects_guard",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L161",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_prompt_hook_injects_ledger_on_recheck_phrases",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L172",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_add_via_json_stdin",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L383",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_finding_benches_no_halt_on_two_strikes",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L414",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_caused_by_finding_halts_on_two_strikes",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L442",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_stop_blocks_on_open_findings_after_round0",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L455",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_stop_allows_when_clean",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L480",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_check_exit0_when_clean",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L488",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_check_exit2_with_open",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L506",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_prompt_hook_fires_on_hebrew_audit_noun",
+      "target": "tests_test_stoploss_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_close_is_gated_by_verify_command",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_close_passes_when_verify_passes",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_manual_close_requires_agent_verdict",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_noise_rule_after_audit_round",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_regression_with_caused_by_stays_open_but_chain_caps",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_monotonic_halt_with_regression_exemption",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_severity_floor_in_late_rounds",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_max_rounds_halts_and_only_human_resume_clears",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_stop_hook_blocks_on_pending_and_respects_guard",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L159",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_prompt_hook_injects_ledger_on_recheck_phrases",
+      "target": "tests_test_stoploss_add",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_close_is_gated_by_verify_command",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_close_passes_when_verify_passes",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_manual_close_requires_agent_verdict",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_noise_rule_after_audit_round",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_regression_with_caused_by_stays_open_but_chain_caps",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_monotonic_halt_with_regression_exemption",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L103",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_severity_floor_in_late_rounds",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L123",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_max_rounds_halts_and_only_human_resume_clears",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_stop_hook_blocks_on_pending_and_respects_guard",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L158",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_prompt_hook_injects_ledger_on_recheck_phrases",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L169",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_add_via_json_stdin",
+      "target": "tests_test_stoploss_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_ingests_findings_as_open",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L299",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_dedup_on_second_run",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L314",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_reopens_closed_on_regression",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L335",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_missing_sentinel_aborts",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L370",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_bypasses_noise_rule_at_round2",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L468",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_make_clean_audit",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L477",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_check_exit0_when_clean",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L491",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_check_exit2_with_open",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L531",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_triage_real_to_open",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L551",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_triage_noise_to_dismissed",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L575",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_status_shows_triage_and_dismissed",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L233",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_233",
+      "target": "tests_test_stoploss_write_auditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L250",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_250",
+      "target": "tests_test_stoploss_load_sl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L282",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_ingests_findings_as_open",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L301",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_dedup_on_second_run",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L316",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_reopens_closed_on_regression",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L336",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_missing_sentinel_aborts",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L354",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_tolerates_nonjson_noise",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L371",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_audit_bypasses_noise_rule_at_round2",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L469",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_make_clean_audit",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L532",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_triage_real_to_open",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L553",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_triage_noise_to_dismissed",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L576",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_status_shows_triage_and_dismissed",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L259",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_259",
+      "target": "tests_test_stoploss_run_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L276",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_276",
+      "target": "tests_test_stoploss_test_audit_ingests_findings_as_open",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L294",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_294",
+      "target": "tests_test_stoploss_test_audit_dedup_on_second_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L308",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_308",
+      "target": "tests_test_stoploss_test_audit_reopens_closed_on_regression",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L332",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_332",
+      "target": "tests_test_stoploss_test_audit_missing_sentinel_aborts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L342",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_342",
+      "target": "tests_test_stoploss_test_audit_tolerates_nonjson_noise",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L360",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_360",
+      "target": "tests_test_stoploss_test_audit_bypasses_noise_rule_at_round2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L381",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_381",
+      "target": "tests_test_stoploss_test_audit_finding_benches_no_halt_on_two_strikes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L412",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_412",
+      "target": "tests_test_stoploss_test_caused_by_finding_halts_on_two_strikes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L440",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_440",
+      "target": "tests_test_stoploss_test_stop_blocks_on_open_findings_after_round0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L453",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_453",
+      "target": "tests_test_stoploss_test_stop_allows_when_clean",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L474",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_test_check_exit0_when_clean",
+      "target": "tests_test_stoploss_make_clean_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L465",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_465",
+      "target": "tests_test_stoploss_make_clean_audit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L473",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_473",
+      "target": "tests_test_stoploss_test_check_exit0_when_clean",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L486",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_486",
+      "target": "tests_test_stoploss_test_check_exit2_with_open",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L504",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_504",
+      "target": "tests_test_stoploss_test_prompt_hook_fires_on_hebrew_audit_noun",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L525",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_525",
+      "target": "tests_test_stoploss_test_triage_real_to_open",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L546",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_546",
+      "target": "tests_test_stoploss_test_triage_noise_to_dismissed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_stoploss.py",
+      "source_location": "L570",
+      "weight": 1.0,
+      "source": "tests_test_stoploss_rationale_570",
+      "target": "tests_test_stoploss_test_status_shows_triage_and_dismissed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "readme_md",
+      "target": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_the_problem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_how_it_works",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_policy_rules_enforced_not_suggested",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_token_savings",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_installation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_per_project_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_workflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L185",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_auditor_scripts_project_defined",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L231",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_triage_findings",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L244",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_full_command_reference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L269",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_configuration_reference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L294",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_hooks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L308",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_tests",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L319",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_benchmark",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L330",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_design_principles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L346",
+      "weight": 1.0,
+      "source": "stoploss_readme_stoploss_stop_loss_for_your_coding_agent",
+      "target": "stoploss_readme_license",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "stoploss_readme_the_problem",
+      "target": "stoploss_readme_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "stoploss_readme_installation",
+      "target": "stoploss_readme_prerequisites",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "stoploss_readme_installation",
+      "target": "stoploss_readme_option_a_copy_skill_recommended_no_plugin_system_needed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "stoploss_readme_installation",
+      "target": "stoploss_readme_option_b_plugin_install_if_supported_by_your_claude_code_version",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "stoploss_readme_option_a_copy_skill_recommended_no_plugin_system_needed",
+      "target": "stoploss_readme_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "stoploss_readme_option_a_copy_skill_recommended_no_plugin_system_needed",
+      "target": "stoploss_readme_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L98",
+      "weight": 1.0,
+      "source": "stoploss_readme_option_a_copy_skill_recommended_no_plugin_system_needed",
+      "target": "stoploss_readme_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "stoploss_readme_option_b_plugin_install_if_supported_by_your_claude_code_version",
+      "target": "stoploss_readme_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L129",
+      "weight": 1.0,
+      "source": "stoploss_readme_per_project_setup",
+      "target": "stoploss_readme_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "stoploss_readme_workflow",
+      "target": "stoploss_readme_the_classic_fix_loop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L164",
+      "weight": 1.0,
+      "source": "stoploss_readme_workflow",
+      "target": "stoploss_readme_the_deterministic_audit_pre_push",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "stoploss_readme_the_classic_fix_loop",
+      "target": "stoploss_readme_codeblock_7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L166",
+      "weight": 1.0,
+      "source": "stoploss_readme_the_deterministic_audit_pre_push",
+      "target": "stoploss_readme_codeblock_8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L189",
+      "weight": 1.0,
+      "source": "stoploss_readme_auditor_scripts_project_defined",
+      "target": "stoploss_readme_codeblock_9",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L210",
+      "weight": 1.0,
+      "source": "stoploss_readme_auditor_scripts_project_defined",
+      "target": "stoploss_readme_codeblock_10",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L235",
+      "weight": 1.0,
+      "source": "stoploss_readme_triage_findings",
+      "target": "stoploss_readme_codeblock_11",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L246",
+      "weight": 1.0,
+      "source": "stoploss_readme_full_command_reference",
+      "target": "stoploss_readme_codeblock_12",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L273",
+      "weight": 1.0,
+      "source": "stoploss_readme_configuration_reference",
+      "target": "stoploss_readme_codeblock_13",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L310",
+      "weight": 1.0,
+      "source": "stoploss_readme_tests",
+      "target": "stoploss_readme_codeblock_14",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L321",
+      "weight": 1.0,
+      "source": "stoploss_readme_benchmark",
+      "target": "stoploss_readme_codeblock_15",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "bench_readme_md",
+      "target": "bench_readme_benchmark_harness",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/README.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "bench_readme_benchmark_harness",
+      "target": "bench_readme_quick_smoke_no_agent_free",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/README.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "bench_readme_benchmark_harness",
+      "target": "bench_readme_real_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/README.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "bench_readme_benchmark_harness",
+      "target": "bench_readme_publishable_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "bench/README.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "bench_readme_benchmark_harness",
+      "target": "bench_readme_honest_limitations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "skills_stoploss_skill_md",
+      "target": "stoploss_skill_stoploss_a_stop_loss_for_your_fix_loop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "stoploss_skill_stoploss_a_stop_loss_for_your_fix_loop",
+      "target": "stoploss_skill_why_you_cannot_declare_success",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "stoploss_skill_stoploss_a_stop_loss_for_your_fix_loop",
+      "target": "stoploss_skill_the_audit_pass_stoploss_on_a_fresh_project",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "stoploss_skill_stoploss_a_stop_loss_for_your_fix_loop",
+      "target": "stoploss_skill_the_fix_loop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "stoploss_skill_stoploss_a_stop_loss_for_your_fix_loop",
+      "target": "stoploss_skill_when_the_user_says_check_again",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "stoploss_skill_stoploss_a_stop_loss_for_your_fix_loop",
+      "target": "stoploss_skill_context_hygiene",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills/stoploss/SKILL.md",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "stoploss_skill_stoploss_a_stop_loss_for_your_fix_loop",
+      "target": "stoploss_skill_audit_phase_deterministic",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "a5b04ea7b453e1847d2a11bd25709f1ecc6d9bf0"
+}

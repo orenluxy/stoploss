@@ -1,0 +1,46 @@
+{
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\bench\\run_bench.py": {
+    "mtime": 1781037294.0,
+    "hash": "b1aec53f314a64bfb15bd71f7f28aca9"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\bench\\tasks\\py-mean-bug\\stats.py": {
+    "mtime": 1781037260.0,
+    "hash": "8d075ae516483d8686fc813ca0671f3d"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\bench\\tasks\\py-mean-bug\\tests\\test_stats.py": {
+    "mtime": 1781037260.0,
+    "hash": "d1befec2578f3dbce16b7777b1c43ac5"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\bench\\tasks\\py-window-bug\\window.py": {
+    "mtime": 1781037260.0,
+    "hash": "7b7f7586bc7a401917b2b2cf57408cc1"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\bench\\tasks\\py-window-bug\\tests\\test_window.py": {
+    "mtime": 1781037260.0,
+    "hash": "02c1ee37fcf0b2a45738d0f2b9ce1f3d"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\bin\\stoploss": {
+    "mtime": 1781087574.4125204,
+    "hash": "96b2a1064eaa66f85be625c23ef52d31"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\tests\\test_stoploss.py": {
+    "mtime": 1781084506.5283945,
+    "hash": "a6a33bf20591bdf93ac8b47d23f7c036"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\README.md": {
+    "mtime": 1781088883.2149231,
+    "hash": "7923e811efd4eed91ac4b9509c4f41b5"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\agents\\stoploss-verifier.md": {
+    "mtime": 1781037244.0,
+    "hash": "3f0675e0625b771128b5d00f26053377"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\bench\\README.md": {
+    "mtime": 1781037324.0,
+    "hash": "ad8b539de88ec81b34ffc969574122e1"
+  },
+  "C:\\Users\\Oren\\TabotAi\\stoploss\\skills\\stoploss\\SKILL.md": {
+    "mtime": 1781084669.1655726,
+    "hash": "afe0f755a783a77ef43be6fd33a641cd"
+  }
+}
