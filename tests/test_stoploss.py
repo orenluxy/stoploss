@@ -99,6 +99,22 @@ def test_monotonic_halt_with_regression_exemption(tmp_path):
     assert rc == 2 and "not converging" in out
 
 
+def test_drained_ledger_does_not_halt_as_stagnation(tmp_path):
+    """0 open twice in a row is 'done', not 'stuck'. Before the guard, the round after a fully
+    drained one halted on 0 >= 0 and needed a human resume (measured 2026-07-29)."""
+    init(tmp_path)
+    add(tmp_path)                        # F-1
+    rc, out = sl(tmp_path, "round")      # round 1, last=1
+    assert rc == 0, out
+    sl(tmp_path, "close", "F-1")         # open: 0
+    rc, out = sl(tmp_path, "round")      # 0 < 1 -> fine, last=0
+    assert rc == 0, out
+    rc, out = sl(tmp_path, "round")      # 0 >= 0, but nothing open -> must NOT halt
+    assert rc == 0, f"drained ledger must not halt; got {rc}: {out}"
+    # real stagnation (open count that refuses to shrink) still halts —
+    # covered by test_monotonic_halt_with_regression_exemption above.
+
+
 def test_severity_floor_in_late_rounds(tmp_path):
     init(tmp_path)
     add(tmp_path)            # keep one open so rounds can advance
@@ -459,6 +475,51 @@ def test_stop_allows_when_clean(tmp_path, monkeypatch):
     assert rc == 0, f"expected exit 0, got {rc}; output: {out}"
 
 
+def _repo_with_upstream(tmp_path, name, dirty):
+    """A git repo whose `@{u}` resolves, with `dirty` uncommitted (i.e. in flight).
+    Without a resolvable upstream `_pending_files` returns None and EVERYTHING blocks,
+    so the scoping branch is only reachable from a repo shaped like this."""
+    bare, work = tmp_path / f"{name}.git", tmp_path / name
+    work.mkdir()
+    g = lambda *a, cwd=work: subprocess.run(["git", *a], cwd=cwd, check=True, capture_output=True)
+    subprocess.run(["git", "init", "--bare", str(bare)], check=True, capture_output=True)
+    g("init", "-b", "main"); g("config", "user.email", "t@t"); g("config", "user.name", "t")
+    g("remote", "add", "origin", str(bare))
+    (work / "seed.txt").write_text("x", encoding="utf-8")
+    g("add", "-A"); g("commit", "-m", "seed"); g("push", "-u", "origin", "main")
+    (work / dirty).write_text("y", encoding="utf-8")
+    return work
+
+
+def test_stop_scopes_blockers_to_files_in_flight(tmp_path, monkeypatch):
+    """A finding blocks session-end only when its location names a file in flight.
+    The tree is shared between parallel sessions — an unrelated peer finding used to hold
+    every session open (Oren 2026-07-29, same rule as the push gate)."""
+    hook = lambda w: sl(w, "hook", "stop",
+                        stdin=json.dumps({"stop_hook_active": False, "cwd": str(w)}))
+
+    # unrelated: touched.js is dirty, the finding points at other.js → not enforced
+    away = _repo_with_upstream(tmp_path, "away", "touched.js")
+    monkeypatch.chdir(away)
+    sl(away, "init")
+    sl(away, "add", "--title", "peer", "--claim", "c", "--location", "other.js:1",
+       "--severity", "major", "--verify", "MANUAL: x")
+    sl(away, "round")
+    rc, out = hook(away)
+    assert rc == 0, f"unrelated finding must not block; got {rc}: {out}"
+    assert "not related" in out, out
+
+    # related: same file is dirty AND named by the finding → still blocks
+    near = _repo_with_upstream(tmp_path, "near", "touched.js")
+    monkeypatch.chdir(near)
+    sl(near, "init")
+    sl(near, "add", "--title", "mine", "--claim", "c", "--location", "touched.js:9",
+       "--severity", "major", "--verify", "MANUAL: x")
+    sl(near, "round")
+    rc, out = hook(near)
+    assert rc == 2, f"related finding must block; got {rc}: {out}"
+
+
 # ── P1-T7: check_gate green push signal ─────────────────────────────────────
 
 def _make_clean_audit(tmp_path, monkeypatch):
@@ -496,6 +557,70 @@ def test_check_exit2_with_open(tmp_path, monkeypatch):
     rc, out = sl(tmp_path, "audit", "--check")
     assert rc == 2, out
     assert "NOT READY" in out
+
+
+def test_confirm_streak_counts_and_reject_breaks_it(tmp_path, monkeypatch):
+    """Oren's confirmation on a closed fix is the trust gate: 3 in a row, a reject resets.
+
+    A green verify proves the symptom is gone; only he can say the right thing got fixed. A rejected
+    fix must BREAK the streak, not silently leave the closed set and take its evidence with it.
+    """
+    monkeypatch.chdir(tmp_path)
+    sl(tmp_path, "init")
+    for i in (1, 2):
+        sl(tmp_path, "add", "--title", f"f{i}", "--claim", "c", "--location", f"f{i}.js:1",
+           "--severity", "major", "--source", "boris:x", "--verify", "python -c \"pass\"")
+        sl(tmp_path, "start", f"F-{i}")
+        assert sl(tmp_path, "close", f"F-{i}")[0] == 0
+
+    rc, out = sl(tmp_path, "confirm", "F-1")
+    assert rc == 0 and "1/3" in out, out
+    rc, out = sl(tmp_path, "confirm", "F-2")
+    assert rc == 0 and "2/3" in out, out
+
+    # reject the newest → it reopens and the chain breaks at it
+    rc, out = sl(tmp_path, "confirm", "F-2", "--reject")
+    assert rc == 0 and "broken" in out.lower(), out
+    db = json.loads((tmp_path / ".stoploss" / "ledger.json").read_text(encoding="utf-8"))
+    f2 = [f for f in db["findings"] if f["id"] == "F-2"][0]
+    assert f2["status"] == "open" and f2["confirmed"] is False and f2["reopens"] == 1
+
+    # an unconfirmed close is skipped, not counted, and cannot be confirmed twice into a lie
+    rc, out = sl(tmp_path, "confirm", "F-2")
+    assert rc != 0 and "not closed" in out, out
+
+
+def test_check_exit2_with_benched_boris_finding(tmp_path, monkeypatch):
+    """A boris item frozen after two failed fixes blocks the push gate, like an audit one.
+
+    record_failure promises "It still BLOCKS push"; check_gate used to filter benched findings
+    to source `audit:` only, so that promise was false for every boris item — the whole ceiling
+    of the boris loop leaked at the push gate.
+    """
+    monkeypatch.chdir(tmp_path)
+    sl(tmp_path, "init")
+    rc, out = sl(tmp_path, "add", "--title", "boris item", "--claim", "c",
+                 "--location", "f.js:1", "--severity", "major",
+                 "--source", "boris:item-7",
+                 "--verify", "python -c \"import sys; sys.exit(1)\"")
+    assert rc == 0 and "open" in out, out
+    sl(tmp_path, "start", "F-1")
+    assert sl(tmp_path, "close", "F-1")[0] == 2          # attempt 1/2
+    assert sl(tmp_path, "close", "F-1")[0] == 2          # benched, no halt
+
+    db = json.loads((tmp_path / ".stoploss" / "ledger.json").read_text(encoding="utf-8"))
+    assert db["findings"][0]["status"] == "backlog" and db["findings"][0]["benched"] is True
+    assert db["halted"] is None, db["halted"]
+
+    auditor = write_auditor(tmp_path, "clean", [])
+    cfg_p = tmp_path / ".stoploss" / "config.json"
+    cfg = json.loads(cfg_p.read_text(encoding="utf-8"))
+    cfg["auditors"] = [{"name": "clean", "cmd": f"python {auditor}", "type": "deterministic"}]
+    cfg_p.write_text(json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    rc, out = sl(tmp_path, "audit", "--check")
+    assert rc == 2, out
+    assert "benched" in out and "F-1" in out, out
 
 
 # ── P1-T8: Hebrew audit triggers in prompt hook ──────────────────────────────
@@ -542,8 +667,8 @@ def test_triage_real_to_open(tmp_path, monkeypatch):
     assert db2["findings"][0]["status"] == "open"
 
 
-def test_triage_noise_to_dismissed(tmp_path, monkeypatch):
-    """stoploss triage F-x --verdict NOISE → dismissed; re-audit skips it."""
+def test_triage_not_to_dismissed(tmp_path, monkeypatch):
+    """stoploss triage F-x --verdict NOT → dismissed; re-audit skips it."""
     monkeypatch.chdir(tmp_path)
     run("init")
     findings = [{"key": "cand:server.js", "title": "candidate", "claim": "c",
@@ -555,7 +680,7 @@ def test_triage_noise_to_dismissed(tmp_path, monkeypatch):
     db = json.loads((tmp_path / ".stoploss" / "ledger.json").read_text(encoding="utf-8"))
     fid = db["findings"][0]["id"]
 
-    subprocess.run(["python", str(BIN), "triage", fid, "--verdict", "NOISE"],
+    subprocess.run(["python", str(BIN), "triage", fid, "--verdict", "NOT"],
                    cwd=str(tmp_path), capture_output=True, text=True, encoding="utf-8")
     db2 = json.loads((tmp_path / ".stoploss" / "ledger.json").read_text(encoding="utf-8"))
     assert db2["findings"][0]["status"] == "dismissed"
@@ -564,6 +689,40 @@ def test_triage_noise_to_dismissed(tmp_path, monkeypatch):
     result2 = run_audit(tmp_path, cfg)
     assert result2.returncode == 0
     assert "0 new" in result2.stdout
+
+
+def test_backlog_raise_needs_a_red_verify(tmp_path):
+    """A shelved finding re-enters the loop only while its verify still fails.
+
+    F-60 sat in backlog with `grep prevViews` as its verify. The code was fixed weeks earlier and
+    the grep matched the comment documenting the fix, so raising it would have produced a green
+    close on zero work — the first live run of the trust gate, on a no-op.
+    """
+    init(tmp_path)
+    add(tmp_path)                            # F-1 at round 0 -> open, so `round` has work
+    sl(tmp_path, "round")
+    add(tmp_path, verify="true")             # F-2: green verify -> backlog (review noise)
+    add(tmp_path, verify="false")            # F-3: red verify   -> backlog (review noise)
+    db = json.loads((tmp_path / ".stoploss" / "ledger.json").read_text(encoding="utf-8"))
+    assert [f["status"] for f in db["findings"][1:]] == ["backlog", "backlog"]
+
+    rc, out = sl(tmp_path, "triage", "F-2", "--verdict", "REAL")
+    assert rc != 0 and "GREEN" in out, out
+    db = json.loads((tmp_path / ".stoploss" / "ledger.json").read_text(encoding="utf-8"))
+    assert db["findings"][1]["status"] == "backlog", "a refused raise must not move the finding"
+
+    # The other door: the defect is gone, so drop the row instead of raising it.
+    rc, out = sl(tmp_path, "triage", "F-2", "--verdict", "NOT")
+    assert rc == 0, out
+    db = json.loads((tmp_path / ".stoploss" / "ledger.json").read_text(encoding="utf-8"))
+    assert db["findings"][1]["status"] == "dismissed"
+
+    # A still-red backlog item raises, and the boris source makes its bench block push.
+    rc, out = sl(tmp_path, "triage", "F-3", "--verdict", "REAL")
+    assert rc == 0 and "open" in out, out
+    db = json.loads((tmp_path / ".stoploss" / "ledger.json").read_text(encoding="utf-8"))
+    assert db["findings"][2]["status"] == "open"
+    assert db["findings"][2]["source"] == "boris:F-3"
 
 
 def test_status_shows_triage_and_dismissed(tmp_path, monkeypatch):

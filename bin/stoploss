@@ -15,8 +15,16 @@ Core commands:
   start ID [ID..]       mark findings as in-progress (pending verification)
   close ID              close a finding - RUNS its verify command; refuses on failure
   fail ID               record a failed fix attempt (two strikes -> backlog + HALT)
+  wait ID [--why ...]   park a finding on Oren: real, but the FIX SHAPE is his call.
+                        Does not block session end or the push gate. He resolves it with
+                        `triage ID --verdict REAL` (fix it) or `--verdict NOT` (drop it).
+  confirm ID [--reject] HUMAN-ONLY: Oren's verdict on a CLOSED fix. 3 confirmed in a row is
+                        the trust gate for unattended work; --reject reopens and breaks it.
   round                 advance one round; HALTs when the loop stops converging
   resume --rounds N     HUMAN-ONLY: clear a halt and grant N more rounds
+  ingest FILE --name N  file auditor-protocol JSONL produced out of band (a nightly scan that
+                        reads live data is too slow to sit in `audit`). Deduped by fingerprint:
+                        known findings refresh, closed ones reopen as regressions.
   status | open | list | pack | gate [--quick] | verify ID | report
 
 Hook handlers (wired by the plugin, read JSON on stdin):
@@ -39,6 +47,11 @@ from pathlib import Path
 
 STATE_DIR = ".stoploss"
 SEVERITIES = ["critical", "major", "minor", "style"]
+# Sources whose findings are first-class: they go straight to `open` on add, and their
+# benched items block the push gate. Kept as ONE constant because the two call sites drifted
+# apart once already — `boris:` was first-class on add but invisible to check_gate, so a boris
+# item frozen after two failed fixes printed "It still BLOCKS push" and then did not.
+FIRST_CLASS_SOURCES = ("audit:", "boris:")
 DEFAULT_PATTERNS = [
     r"\bcheck( it)? again\b", r"\bre-?check\b", r"\breview\b", r"\baudit\b",
     r"\bfind (more )?bugs\b", r"בדוק", r"תבדוק", r"עבור על",
@@ -115,9 +128,14 @@ def get(db, fid):
 
 def run_shell(cmd, cwd, timeout, tail=8):
     try:
+        # encoding/errors explicit: verify commands print Hebrew, and the Windows default (cp1252)
+        # kills the reader thread mid-decode, which is what handed the caller stdout=None.
         r = subprocess.run(cmd, shell=True, cwd=cwd, timeout=timeout,
-                           capture_output=True, text=True)
-        lines = (r.stdout + r.stderr).strip().splitlines()[-tail:]
+                           capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
+        # stdout/stderr can come back None (no pipe attached / decode gave nothing) — a crash here
+        # loses the verify result entirely, which is worse than reporting an empty tail.
+        lines = ((r.stdout or "") + (r.stderr or "")).strip().splitlines()[-tail:]
         return r.returncode, "\n".join(lines)
     except subprocess.TimeoutExpired:
         return 124, f"timeout after {timeout}s"
@@ -279,7 +297,11 @@ def add_finding(db, cfg, data, source="manual", fp=None):
     fid = f"F-{1 + max([int(f['id'][2:]) for f in db['findings']] or [0])}"
     status, note, chain = "open", "", 0
     caused_by = data.get("caused_by")
-    is_audit = source.startswith("audit:")
+    # First-class producers go straight to `open`. An audit run is one; so is the boris loop
+    # (Oren, 2026-07-29) — it registers only items it has already reproduced and intends to fix.
+    # Without this, every boris item landed in backlog after round 1 while `close` accepts only
+    # `open`, so boris step 2 -> step 5 could not execute and the ceiling was prose again.
+    is_audit = source.startswith(FIRST_CLASS_SOURCES)
     if caused_by:
         parent = get(db, caused_by)
         chain = parent.get("chain", 0) + 1
@@ -299,6 +321,11 @@ def add_finding(db, cfg, data, source="manual", fp=None):
         "created_round": db["round"], "caused_by": caused_by, "chain": chain,
         "fp": fp, "source": source, "reopens": 0,
         "evidence": data.get("evidence"), "created": now(),
+        # `he` is what Oren reads on the status board: {what, where, fix} in plain Hebrew.
+        # The English title/claim above are written for whoever fixes the bug; a board row made
+        # of an English sentence and a file path told him nothing (his words, 31/07). A producer
+        # that cannot write Hebrew leaves this null and the board says so out loud.
+        "he": data.get("he"),
     })
     return fid, status, note
 
@@ -318,7 +345,7 @@ def cmd_add(a):
                 ("title", "claim", "location", "severity", "verify")}
         data["caused_by"] = a.caused_by
     try:
-        fid, status, note = add_finding(db, cfg, data, source="manual")
+        fid, status, note = add_finding(db, cfg, data, source=getattr(a, "source", None) or "manual")
     except ValueError as e:
         sys.exit(str(e))
     s.save_ledger(db)
@@ -366,20 +393,113 @@ def cmd_close(a):
           f"pending: {db['pending']}")
 
 
+def cmd_wait(a):
+    """Park a finding on Oren: real, verified, but the FIX SHAPE is his product decision.
+    Distinct from `open` (I am fixing it) and from `triage` (is it even real). It does not block
+    the session-end hook or the push gate — the ball is not in my court (Oren, 2026-07-29)."""
+    s = store_or_die()
+    db = s.ledger
+    for fid in a.ids:
+        f = get(db, fid)
+        if f["status"] not in ("open", "triage"):
+            sys.exit(f"{fid} is {f['status']} — only open/triage can wait on Oren.")
+        f["status"] = "awaiting_oren"
+        f["awaiting_since"] = now()
+        if a.why:
+            f["awaiting_why"] = a.why
+    s.save_ledger(db)
+    print(f"awaiting Oren: {', '.join(a.ids)} — resolve with: stoploss triage <id> --verdict REAL|NOT")
+
+
 def cmd_triage(a):
+    """The one door into the fix loop: triage candidate, Oren-parked, or shelved backlog item.
+
+    `backlog` is here because nothing else lifted from it (Oren, 2026-07-29). Re-registering the
+    same defect as a fresh `boris:` finding left two rows for one bug; this reuses the row.
+    """
     s = store_or_die()
     db = s.ledger
     f = get(db, a.id)
-    if f["status"] != "triage":
-        sys.exit(f"{a.id} is {f['status']}, not triage.")
+    if f["status"] not in ("triage", "awaiting_oren", "backlog"):
+        sys.exit(f"{a.id} is {f['status']}, not triage/awaiting_oren/backlog.")
+    if a.verify:
+        # The refusal below tells you to rewrite a verify that does not fail on the defect. That
+        # instruction pointed at the ledger JSON, i.e. at hand-editing the enforcement store.
+        f["verify"] = a.verify
     if a.verdict == "REAL":
+        if f["status"] == "backlog":
+            # A shelved finding must prove it is still a defect before it re-enters the loop: its
+            # verify command has to be RED right now. Green means either it was fixed while it sat
+            # there (F-60: the read-modify-write went away weeks earlier), or the command greps the
+            # evidence instead of failing on the defect (F-60 again: `grep prevViews` matched the
+            # comment that documents the removal). Both hand `close` a verified-green on no work.
+            v = f["verify"].strip()
+            if not v.upper().startswith("MANUAL:"):
+                rc, out = run_shell(v, s.root, FULL_TIMEOUT)
+                if rc == 0:
+                    sys.exit(f"{a.id}: verify is GREEN right now — refusing to raise it.\n"
+                             f"Either the defect is already fixed (then: triage {a.id} "
+                             f"--verdict NOT), or the verify command does not fail on the "
+                             f"defect (rewrite it in the ledger, then raise).\n{out}")
+            # The loop owns it now, so a two-strikes bench actually blocks push (check_gate
+            # counts benched findings only from FIRST_CLASS_SOURCES).
+            f["source"] = f"boris:{a.id}"
         f["status"] = "open"
+        f.pop("benched", None)
         msg = "open (enters fix loop)"
     else:
         f["status"] = "dismissed"
         msg = "dismissed (future audits skip it via fingerprint)"
+    if a.why:
+        f["triage_why"] = a.why      # why this row died / came back, on the row itself
     s.save_ledger(db)
     print(f"{a.id} -> {msg}")
+
+
+def cmd_confirm(a):
+    """Oren's verdict on a CLOSED fix — the only evidence that "done" meant done.
+
+    This is the graduation gate for unattended work (Oren, 2026-07-29): a fix he asked for, that
+    the loop fixed and verified and declared green, and that he then confirmed still holds. Three
+    of those in a row is the trust the routines item is waiting on. A green verify command proves
+    the symptom is gone; only he can say the right thing was fixed.
+    `--reject` reopens the finding and marks the run so the streak breaks instead of the rejected
+    item quietly leaving the closed set and taking its own evidence with it.
+    """
+    s = store_or_die()
+    db = s.ledger
+    f = get(db, a.id)
+    if f["status"] != "closed":
+        sys.exit(f"{a.id} is {f['status']}, not closed — nothing to confirm yet.")
+    if a.reject:
+        f["status"] = "open"
+        f["confirmed"] = False
+        f["reopens"] = f.get("reopens", 0) + 1
+        f["attempts"] = 0            # a wrong fix is a fresh problem, not a second strike
+        s.save_ledger(db)
+        print(f"{a.id} -> open (Oren rejected the fix). Confirmation streak broken.")
+        return
+    f["confirmed"] = True
+    s.save_ledger(db)
+    streak = confirmed_streak(db)
+    print(f"{a.id} confirmed by Oren. Confirmation streak: {streak}/3.")
+
+
+def confirmed_streak(db):
+    """Consecutive Oren-confirmed fixes at the tail of close order.
+
+    Walks newest-closed backwards: confirmed counts, an explicit rejection breaks the chain,
+    a closed-but-unreviewed fix is skipped — it is not evidence in either direction.
+    """
+    ever_closed = sorted((f for f in db["findings"] if f.get("closed")),
+                         key=lambda f: f["closed"])
+    n = 0
+    for f in reversed(ever_closed):
+        if f.get("confirmed") is True:
+            n += 1
+        elif f.get("confirmed") is False:
+            break
+    return n
 
 
 def cmd_fail(a):
@@ -419,10 +539,14 @@ def cmd_round(_):
     # POLICY: monotonic convergence with a regression exemption.
     # Open findings born as regressions (caused_by) in the round that just
     # ended don't count against shrink - but organic stagnation halts.
+    # An EMPTY ledger cannot shrink, so convergence says nothing about it: 0 >= 0 halted every
+    # round that followed a fully-drained one, i.e. the normal state after a successful sweep
+    # (measured 2026-07-29 — a session opened to "loop is not converging" with zero open findings
+    # and needed a human `resume`). Zero open means done, not stalled.
     exempt = sum(1 for f in cur_open
                  if f.get("caused_by") and f["created_round"] == db["round"])
     effective = cur - exempt
-    if db["last_open_count"] is not None and effective >= db["last_open_count"]:
+    if effective and db["last_open_count"] is not None and effective >= db["last_open_count"]:
         db["halted"] = (f"loop is not converging (effective open "
                         f"{effective} >= previous {db['last_open_count']}). "
                         f"Stop and report. Human: stoploss resume")
@@ -472,21 +596,71 @@ def cmd_gate(a):
     print("All gates passed.")
 
 
-def check_gate(db, new_this_run):
+def _pending_files(root):
+    """Files this push would carry: committed-but-unpushed + working tree."""
+    out = set()
+    for cmd in ("git diff --name-only @{u}..HEAD", "git status --porcelain"):
+        rc, txt = run_shell(cmd, root, QUICK_TIMEOUT, tail=4000)
+        if rc != 0:
+            return None          # no upstream / not a repo -> caller falls back to blocking on all
+        for line in txt.splitlines():
+            line = line.rstrip()
+            if not line:
+                continue
+            # `status --porcelain` emits "XY <path>"; `diff --name-only` emits a bare path.
+            # {1,2} not {2}: run_shell() strips the whole output, so the FIRST line of
+            # " M path" arrives as "M path" with its leading status column gone.
+            mt = re.match(r"^[ MADRCU?!]{1,2} (.+)$", line)
+            out.add((mt.group(1) if mt else line).strip().strip('"'))
+    return out
+
+
+def _touches(finding, files):
+    """True if the finding's location names a file this push carries.
+    `location` is free text ("engine/ai-utils.js:51 (wrapper)"), so match on path-looking
+    tokens only — a bare word would collide with prose."""
+    tokens = re.findall(r"[\w./-]+\.(?:js|cjs|mjs|py|json|html|css|md|sh|sql)", finding.get("location", ""))
+    return any(any(t in f or f in t for t in tokens) for f in files)
+
+
+def _split_related(findings, pending):
+    """Split findings into (related, unrelated) by whether their `location` names a file
+    currently in flight. `pending is None` (file set undeterminable) → everything is related,
+    i.e. everything blocks. Shared by the push gate and the session-end hook so both answer
+    "is this finding MINE?" the same way."""
+    if pending is None:
+        return list(findings), []
+    related = [f for f in findings if _touches(f, pending)]
+    return related, [f for f in findings if f not in related]
+
+
+def check_gate(db, new_this_run, root="."):
     """Exit 0 IFF push-ready: no open, no triage, no benched audit findings,
-    and this audit run ingested nothing new. Otherwise exit 2 with reasons."""
+    and this audit run ingested nothing new. Otherwise exit 2 with reasons.
+
+    An open finding blocks only when it is DIRECTLY RELATED to what is being pushed, i.e. its
+    location names a file this push carries (Oren, 2026-07-29). Before that rule, one open
+    follow-up froze every other session's push, including work that never touched those files —
+    the gate stopped being a safety net and became a queue. Unrelated findings are listed, not
+    enforced. If the pending file set cannot be determined, every open finding blocks (fail safe).
+    """
     blocks = []
-    oc = len(open_findings(db))
+    related, unrelated = _split_related(open_findings(db), _pending_files(root))
+    oc = len(related)
+    if unrelated:
+        print(f"note: {len(unrelated)} open finding(s) not related to these files — "
+              f"not blocking: {', '.join(f['id'] for f in unrelated)}")
     tc = len([f for f in db["findings"] if f["status"] == "triage"])
     benched = [f for f in db["findings"]
                if f["status"] == "backlog" and f.get("benched")
-               and str(f.get("source", "")).startswith("audit:")]
+               and str(f.get("source", "")).startswith(FIRST_CLASS_SOURCES)]
     if oc:
         blocks.append(f"{oc} open finding(s)")
     if tc:
         blocks.append(f"{tc} triage candidate(s) awaiting verdict")
     if benched:
-        blocks.append(f"{len(benched)} benched audit finding(s) (fix approach failed twice)")
+        blocks.append(f"{len(benched)} benched finding(s) (fix approach failed twice): "
+                      f"{', '.join(f['id'] for f in benched)}")
     if new_this_run:
         blocks.append(f"{new_this_run} new finding(s) this run (fix them first)")
     if blocks:
@@ -494,6 +668,62 @@ def check_gate(db, new_this_run):
         sys.exit(2)
     print("READY TO PUSH: audit clean — 0 open / 0 triage / 0 benched, no new findings.")
     sys.exit(0)
+
+
+def ingest_findings(db, cfg, root, name, findings, triage=False):
+    """File auditor findings, deduped by fingerprint. Returns (new, reopened).
+
+    Shared by `audit` (diff-scoped auditors) and `ingest` (out-of-band scans such as the nightly
+    report-content sweep). The fingerprint is why an unattended scan can run every night without
+    flooding the ledger: a finding already present is refreshed, a finding already closed reopens
+    as a regression, and a dismissed one stays dismissed.
+    """
+    new_ct = reopen_ct = 0
+    for fd in findings:
+        fp = finding_fp(name, fd.get("key"), fd.get("location"), fd["title"], root)
+        ex = next((f for f in db["findings"] if f.get("fp") == fp), None)
+        if ex:
+            if ex["status"] == "closed":
+                ex.update(status="open", attempts=0,
+                          reopens=ex.get("reopens", 0) + 1,
+                          evidence=fd.get("evidence"))
+                reopen_ct += 1
+            elif ex["status"] != "dismissed":
+                ex["evidence"] = fd.get("evidence")
+            continue  # skip insert
+        data = dict(fd)
+        data["triage"] = triage
+        try:
+            add_finding(db, cfg, data, source=f"audit:{name}", fp=fp)
+        except ValueError as e:
+            sys.exit(f"auditor '{name}' emitted bad finding: {e}")
+        new_ct += 1
+    return new_ct, reopen_ct
+
+
+def cmd_ingest(a):
+    """Ingest auditor-protocol JSONL produced out of band (a file, or '-' for stdin).
+
+    `audit` runs auditors that finish in seconds against the diff. A scan that reads live data for
+    many clients cannot sit in that list without turning the push gate into a coffee break, so it
+    runs on its own schedule and hands its findings over here.
+    """
+    s = store_or_die()
+    db, cfg = s.ledger, s.config
+    raw = sys.stdin.read() if a.path == "-" else Path(a.path).read_text(encoding="utf-8")
+    findings, complete = parse_auditor_output(raw)
+    if not complete:
+        sys.exit(f"INGEST REFUSED: no audit_complete sentinel in {a.path} — the scan did not "
+                 f"finish, and a partial scan must never read as clean.")
+    cap = cfg.get("max_audit_findings", 50)
+    if len(findings) > cap:
+        sys.exit(f"INGEST REFUSED: {len(findings)} findings (> max_audit_findings {cap}) — "
+                 f"probable broken scan.")
+    new_ct, reopen_ct = ingest_findings(db, cfg, s.root, a.name, findings,
+                                        triage=a.triage)
+    s.save_ledger(db)
+    print(f"ingest[{a.name}]: {new_ct} new, {reopen_ct} reopened, "
+          f"{len(findings) - new_ct - reopen_ct} already known. open={len(open_findings(db))}.")
 
 
 def cmd_audit(a):
@@ -524,29 +754,13 @@ def cmd_audit(a):
                   f"findings (> max_audit_findings {cap}). Probable broken/flaky "
                   f"auditor — check diff_base scope in .stoploss/config.json")
             sys.exit(2)
-        for fd in findings:
-            fp = finding_fp(ad["name"], fd.get("key"), fd.get("location"),
-                            fd["title"], s.root)
-            ex = next((f for f in db["findings"] if f.get("fp") == fp), None)
-            if ex:
-                if ex["status"] == "closed":
-                    ex.update(status="open", attempts=0,
-                              reopens=ex.get("reopens", 0) + 1,
-                              evidence=fd.get("evidence"))
-                    reopen_ct += 1
-                elif ex["status"] != "dismissed":
-                    ex["evidence"] = fd.get("evidence")
-                continue  # skip insert
-            data = dict(fd)
-            data["triage"] = (ad.get("type") == "triage")
-            try:
-                add_finding(db, cfg, data, source=f"audit:{ad['name']}", fp=fp)
-            except ValueError as e:
-                sys.exit(f"auditor '{ad['name']}' emitted bad finding: {e}")
-            new_ct += 1
+        n, r = ingest_findings(db, cfg, s.root, ad["name"], findings,
+                               triage=(ad.get("type") == "triage"))
+        new_ct += n
+        reopen_ct += r
     s.save_ledger(db)
     if a.check:
-        check_gate(db, new_ct)
+        check_gate(db, new_ct, s.root)
         return
     oc = len(open_findings(db))
     tc = len([f for f in db["findings"] if f["status"] == "triage"])
@@ -558,15 +772,19 @@ def cmd_status(_):
     db = s.ledger
     o = open_findings(db)
     counts = {st: len([f for f in db["findings"] if f["status"] == st])
-              for st in ("open", "closed", "backlog", "triage", "dismissed")}
+              for st in ("open", "closed", "backlog", "triage", "dismissed", "awaiting_oren")}
     halted = f" | HALTED: {db['halted']}" if db["halted"] else ""
     print(f"Round {db['round']} | open {counts['open']} | closed {counts['closed']} "
+          f"| awaiting-Oren {counts['awaiting_oren']} "
           f"| triage {counts['triage']} | backlog {counts['backlog']} "
           f"| dismissed {counts['dismissed']} | pending {db['pending']}{halted}")
     for f in o:
         print(f"  {f['id']} [{f['severity']}] {f['title']} @ {f['location']}")
     for f in [x for x in db["findings"] if x["status"] == "triage"]:
         print(f"  {f['id']} [TRIAGE {f['severity']}] {f['title']} @ {f['location']}")
+    for f in [x for x in db["findings"] if x["status"] == "awaiting_oren"]:
+        print(f"  {f['id']} [ממתין לאורן {f['severity']}] {f['title']} @ {f['location']}"
+              + (f"\n      → {f['awaiting_why']}" if f.get("awaiting_why") else ""))
 
 
 def cmd_open(_):
@@ -600,7 +818,7 @@ def cmd_pack(_):
             "human can resume.",
             "TRIAGE findings: run the stoploss-verifier subagent on the candidate, "
             "then: stoploss triage <id> --verdict REAL (enters fix loop) "
-            "or NOISE (dismissed forever — re-audits skip it).",
+            "or NOT (dismissed forever — re-audits skip it).",
             "A close that exits 2 means THIS finding's verify failed. "
             "Check stoploss status: if HALTED (regression), stop and report. "
             "If NOT halted (independent finding), it was benched — continue with other open findings.",
@@ -631,6 +849,45 @@ def hook_prompt():
               f"work open findings by id, or run /stoploss for the audit flow.")
 
 
+def _session_files_path(root, session_id):
+    return Path(root) / ".stoploss" / f"session-{re.sub(r'[^A-Za-z0-9_-]', '', session_id)[:40]}.files"
+
+
+def _record_session_file(root, session_id, path):
+    """Remember that THIS session edited this file.
+
+    The tree is shared between parallel sessions, so "dirty in git" answers "someone is working
+    on it", not "I am". Without a per-session record, a peer's in-progress file made THEIR findings
+    block MY session end (measured 31/07: 9 hardcoded-px findings in a file another session was
+    editing held this one open). Same family as the .git/-scoped marker in LEARN-293.
+    """
+    if not session_id or not path:
+        return
+    try:
+        p = _session_files_path(root, session_id)
+        p.parent.mkdir(exist_ok=True)
+        rel = normalize_location(path, root)
+        seen = set(p.read_text(encoding="utf-8").split("\n")) if p.exists() else set()
+        if rel and rel not in seen:
+            with p.open("a", encoding="utf-8") as fh:
+                fh.write(rel + "\n")
+    except OSError:
+        pass          # a bookkeeping failure must never break an edit
+
+
+def _session_files(root, session_id):
+    """Files this session edited, or None when unknown (→ caller falls back to the git set)."""
+    if not session_id:
+        return None
+    try:
+        p = _session_files_path(root, session_id)
+        if not p.exists():
+            return set()
+        return {l.strip() for l in p.read_text(encoding="utf-8").splitlines() if l.strip()}
+    except OSError:
+        return None
+
+
 def hook_posttool():
     data = json.load(sys.stdin)
     if data.get("tool_name") not in ("Edit", "Write", "MultiEdit"):
@@ -641,6 +898,8 @@ def hook_posttool():
     s = Store(root)
     if s.ledger is None:
         return
+    _record_session_file(root, data.get("session_id", ""),
+                         (data.get("tool_input") or {}).get("file_path", ""))
     for g in s.config.get("gates_quick", []):
         rc, out = run_shell(g, root, QUICK_TIMEOUT)
         if rc != 0:
@@ -660,19 +919,47 @@ def hook_stop():
     db = s.ledger
     if db is None or db["halted"]:
         return  # a halted loop SHOULD stop
+    # Same rule as the push gate (Oren, 2026-07-29), one layer up: a finding blocks THIS session's
+    # end only when it names a file in flight. The tree is shared between parallel sessions, so
+    # without this an unrelated finding from a peer session held every other session open — and the
+    # only ways out were misusing `wait` (which lies: it means "awaiting Oren") or a human `resume`.
+    # ...and "in flight" means what THIS session edited, intersected with what the push would
+    # carry. `git status` alone is tree-wide: a peer session's dirty file made its findings block
+    # this session's end. An empty session-file set means this session edited nothing, so nothing
+    # here is mine to close.
+    in_flight = _pending_files(root)
+    mine_files = _session_files(root, data.get("session_id", ""))
+    if mine_files is not None and in_flight is not None:
+        in_flight = in_flight & mine_files
+    by_id = {f["id"]: f for f in db["findings"]}
+
+    def mine(items, label):
+        related, unrelated = _split_related(items, in_flight)
+        if unrelated:
+            print(f"[stoploss] {len(unrelated)} {label} not related to files in flight "
+                  f"(not blocking): {', '.join(f['id'] for f in unrelated)}", file=sys.stderr)
+        return related
+
     blockers = []
-    if db.get("pending"):
-        blockers.append(f"findings pending verification {db['pending']}")
+    pend = mine([by_id[i] for i in db.get("pending", []) if i in by_id],
+                "finding(s) pending verification")
+    if pend:
+        blockers.append(f"findings pending verification {[f['id'] for f in pend]}")
     if db["round"] > 0:
-        oc = len(open_findings(db))
+        oc = len(mine(open_findings(db), "open finding(s)"))
         if oc:
             blockers.append(f"{oc} open finding(s) not closed")
-    tc = len([f for f in db["findings"] if f["status"] == "triage"])
+    tc = len(mine([f for f in db["findings"] if f["status"] == "triage"], "triage candidate(s)"))
     if tc:
         blockers.append(f"{tc} triage candidate(s) awaiting verdict")
+    # awaiting_oren is deliberately NOT a blocker: the ball is in Oren's court, not mine.
+    waiting = [f["id"] for f in db["findings"] if f["status"] == "awaiting_oren"]
+    if waiting:
+        print(f"[stoploss] ממתין לאורן (not blocking): {', '.join(waiting)}", file=sys.stderr)
     if blockers:
         print(f"[stoploss] Session cannot end: {'; '.join(blockers)}. "
-              f"Close/triage findings, or the human resumes with: stoploss resume",
+              f"Close/triage findings, park a decision on Oren with `stoploss wait <id> --why ...`, "
+              f"or the human resumes with: stoploss resume",
               file=sys.stderr)
         sys.exit(2)
 
@@ -736,7 +1023,10 @@ def cmd_report(_):
 
 # ------------------------------------------------------------------ main
 def main():
-    for stream in (sys.stdout, sys.stderr):
+    # stdin too, not just the output streams: on Windows it defaults to the console
+    # codepage, so Hebrew piped into `add --json -` or into a hook handler decoded
+    # into lone surrogates and every ledger write died on UnicodeEncodeError.
+    for stream in (sys.stdout, sys.stderr, sys.stdin):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8")
     p = argparse.ArgumentParser(prog="stoploss")
@@ -746,9 +1036,15 @@ def main():
     for f in ("--title", "--claim", "--location", "--severity", "--verify"):
         a.add_argument(f)
     a.add_argument("--caused-by", dest="caused_by", default=None)
+    a.add_argument("--source", default="manual",
+                   help="'boris:<item>' registers a reproduced boris item -> open (like audit:); "
+                        "anything else is manual and lands in backlog after round 1")
     a.add_argument("--json", help="path to JSON, or - for stdin")
     st = sub.add_parser("start")
     st.add_argument("ids", nargs="+")
+    w = sub.add_parser("wait")
+    w.add_argument("ids", nargs="+")
+    w.add_argument("--why", default=None, help="the decision Oren has to make, one line")
     c = sub.add_parser("close")
     c.add_argument("id")
     c.add_argument("--agent-verdict", default=None)
@@ -763,9 +1059,24 @@ def main():
     g.add_argument("--quick", action="store_true")
     au = sub.add_parser("audit")
     au.add_argument("--check", action="store_true")
+    ig = sub.add_parser("ingest")
+    ig.add_argument("path", help="JSONL file of auditor-protocol findings, or - for stdin")
+    ig.add_argument("--name", required=True,
+                    help="scan name — becomes source 'audit:<name>' and the fingerprint prefix")
+    ig.add_argument("--triage", action="store_true",
+                    help="file as triage candidates (awaiting a REAL/NOT verdict) instead of open")
     tr = sub.add_parser("triage")
     tr.add_argument("id")
-    tr.add_argument("--verdict", choices=["REAL", "NOISE"], required=True)
+    tr.add_argument("--verdict", choices=["REAL", "NOT"], required=True,
+                    help="REAL -> open (a backlog item must have a RED verify to be raised); "
+                         "NOT -> dismissed")
+    tr.add_argument("--why", default=None, help="the reason, one line — kept on the finding")
+    tr.add_argument("--verify", default=None,
+                    help="replace the finding's verify command (it must be RED to raise)")
+    cf = sub.add_parser("confirm")
+    cf.add_argument("id")
+    cf.add_argument("--reject", action="store_true",
+                    help="Oren says the fix does not hold -> reopen and break the streak")
     for name in ("round", "status", "open", "list", "pack", "report"):
         sub.add_parser(name)
     h = sub.add_parser("hook")
@@ -777,7 +1088,9 @@ def main():
          "stop": hook_stop}[args.which]()
         return
     {"init": cmd_init, "add": cmd_add, "start": cmd_start, "close": cmd_close,
-     "triage": cmd_triage, "fail": cmd_fail, "verify": cmd_verify, "round": cmd_round,
+     "triage": cmd_triage, "confirm": cmd_confirm, "ingest": cmd_ingest,
+     "fail": cmd_fail, "verify": cmd_verify, "round": cmd_round,
+     "wait": cmd_wait,
      "resume": cmd_resume, "gate": cmd_gate, "audit": cmd_audit,
      "status": cmd_status, "open": cmd_open, "list": cmd_list,
      "pack": cmd_pack, "report": cmd_report}[args.cmd](args)
