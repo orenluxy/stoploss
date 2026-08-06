@@ -344,6 +344,68 @@ def test_audit_reopens_closed_on_regression(tmp_path, monkeypatch):
     assert db2["findings"][0]["reopens"] == 1
 
 
+def test_reopen_adopts_the_current_defect(tmp_path, monkeypatch):
+    """A reopen carries TODAY's claim/verify, not the text the id was first filed with.
+
+    The fingerprint is coarse on purpose (one bucket per check per client, no date), so a different
+    defect of the same kind lands on the existing id. Keeping the original text made the board
+    describe an already-fixed defect, and the stale `verify` would pass and close it unread.
+    """
+    monkeypatch.chdir(tmp_path)
+    run("init")
+    key = "judge:contradiction:some-client"
+    old = [{"key": key, "title": "judge on some-client", "claim": "old defect",
+            "location": "http://x", "severity": "major", "verify": "MANUAL: old quote",
+            "he": {"what": "הפגם הישן", "where": "w", "fix": "f"}}]
+    auditor = write_auditor(tmp_path, "nightly", old)
+    cfg = [{"name": "nightly", "cmd": f"python {auditor}", "type": "deterministic"}]
+    run_audit(tmp_path, cfg)
+    import json
+    led = tmp_path / ".stoploss" / "ledger.json"
+    db = json.loads(led.read_text(encoding="utf-8"))
+    db["findings"][0]["status"] = "closed"
+    led.write_text(json.dumps(db, ensure_ascii=False, indent=2), encoding="utf-8")
+    # same fp, different defect — this is the real-world case that misled the board
+    fresh = [{**old[0], "claim": "new defect", "verify": "MANUAL: new quote",
+              "he": {"what": "הפגם החדש", "where": "w2", "fix": "f2"},
+              "evidence": {"quote": "today's sentence"}}]
+    auditor2 = write_auditor(tmp_path, "nightly", fresh)
+    result = run_audit(tmp_path, [{"name": "nightly", "cmd": f"python {auditor2}", "type": "deterministic"}])
+    assert "1 reopened" in result.stdout, result.stdout + result.stderr
+    f = json.loads(led.read_text(encoding="utf-8"))["findings"][0]
+    assert f["status"] == "open" and f["reopens"] == 1
+    assert f["claim"] == "new defect" and f["verify"] == "MANUAL: new quote"
+    assert f["he"]["what"] == "הפגם החדש"
+    assert f["evidence"]["quote"] == "today's sentence"
+
+
+def test_refind_moves_the_finding_to_today(tmp_path, monkeypatch):
+    """A finding the sweep finds again is re-dated to today, with its history kept.
+
+    Oren, 2026-08-05: an old finding stayed filed under the day it was first seen, so every session
+    re-checked it, found the original sentence already gone, and burned the same tokens again. One
+    copy, dated by the sweep that found it; `first_seen` + `moved_from` let the old day say
+    "moved to <today>" instead of showing a stale open row.
+    """
+    monkeypatch.chdir(tmp_path)
+    run("init")
+    fs = [{"key": "judge:contradiction:c1", "title": "t", "claim": "c", "location": "http://x",
+           "severity": "major", "verify": "MANUAL: q"}]
+    auditor = write_auditor(tmp_path, "nightly", fs)
+    cfg = [{"name": "nightly", "cmd": f"python {auditor}", "type": "deterministic"}]
+    run_audit(tmp_path, cfg)
+    import json
+    led = tmp_path / ".stoploss" / "ledger.json"
+    db = json.loads(led.read_text(encoding="utf-8"))
+    db["findings"][0]["created"] = "2026-01-02T03:04:05+00:00"   # filed on an old day
+    led.write_text(json.dumps(db, ensure_ascii=False, indent=2), encoding="utf-8")
+    run_audit(tmp_path, cfg)   # same fp, still open, found again "today"
+    f = json.loads(led.read_text(encoding="utf-8"))["findings"][0]
+    assert f["first_seen"].startswith("2026-01-02")
+    assert f["moved_from"] == ["2026-01-02"]
+    assert not f["created"].startswith("2026-01-02")   # moved onto the day it was found again
+
+
 def test_audit_missing_sentinel_aborts(tmp_path, monkeypatch):
     """Auditor that exits without sentinel → AUDIT FAILED, exit 2."""
     monkeypatch.chdir(tmp_path)

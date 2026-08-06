@@ -678,18 +678,51 @@ def ingest_findings(db, cfg, root, name, findings, triage=False):
     flooding the ledger: a finding already present is refreshed, a finding already closed reopens
     as a regression, and a dismissed one stays dismissed.
     """
+    def redate(f):
+        """Move a finding that TODAY's scan found onto today's date (Oren, 2026-08-05).
+
+        A finding stayed filed under the day it was first seen. So an old defect the sweep keeps
+        finding sat forever in that old day's column, every session re-checked it, and every session
+        discovered the original sentence was already gone — the same tokens burned again and again
+        while the live defect went unread. Now the sweep that found it owns it: one copy, dated
+        today, with `first_seen` and `moved_from` keeping the history so the old day can say
+        "handled — moved to <today>" instead of showing a stale open row.
+        """
+        was = str(f.get("created", ""))[:10]
+        today = now()[:10]
+        if not was or was == today:
+            return
+        f["first_seen"] = f.get("first_seen") or f["created"]
+        f["moved_from"] = [*f.get("moved_from", []), was]
+        f["created"] = now()
+
     new_ct = reopen_ct = 0
     for fd in findings:
         fp = finding_fp(name, fd.get("key"), fd.get("location"), fd["title"], root)
         ex = next((f for f in db["findings"] if f.get("fp") == fp), None)
         if ex:
             if ex["status"] == "closed":
+                # A reopen adopts the CURRENT defect, not the one this id was filed for (Oren,
+                # 2026-08-05). The fingerprint is deliberately coarse — one bucket per check per
+                # client, no date — so a different defect of the same kind on the same client lands
+                # here. Keeping the original claim/he made ten reopened findings describe a defect
+                # that was already fixed, and the board said "still open" about the wrong sentence.
+                # `verify` comes along too: the old one asks about a sentence that is gone, so it
+                # would exit 0 and close the finding without anyone looking at what actually broke.
                 ex.update(status="open", attempts=0,
                           reopens=ex.get("reopens", 0) + 1,
-                          evidence=fd.get("evidence"))
+                          evidence=fd.get("evidence"),
+                          claim=fd["claim"], title=fd["title"],
+                          location=fd.get("location", ex.get("location")),
+                          verify=fd.get("verify", ex.get("verify")),
+                          he=fd.get("he", ex.get("he")))
+                redate(ex)
                 reopen_ct += 1
             elif ex["status"] != "dismissed":
                 ex["evidence"] = fd.get("evidence")
+                # Still open from an earlier day and found again today: same problem as the reopen
+                # above — it must not keep ageing in the old day's column.
+                redate(ex)
             continue  # skip insert
         data = dict(fd)
         data["triage"] = triage
